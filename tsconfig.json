@@ -11,7 +11,7 @@
         "target": "ES6",
         "pretty": true,
         "skipDefaultLibCheck": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
     },
     "exclude": ["node_modules"]
 }

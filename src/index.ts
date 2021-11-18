@@ -21,6 +21,9 @@ client.baileys.ev.on('connection.update', (conn) => {
     }
   } else if (conn.connection && conn.connection === 'open') {
     client.logger.info('WebSocket opened');
+  } else if (conn.receivedPendingNotifications) {
+      client.logger.info('Block all pending notification cuz i hate it');
+      return;
   }
 });
 
@@ -32,4 +35,8 @@ client.baileys.ev.on('auth-state.update', () => {
 
 /** Main events */
 
-client.baileys.ev.on('messages.upsert',  eventsHandler.messageUpsert.bind(eventsHandler));
+client.baileys.ev.on('messages.upsert',
+    eventsHandler.messageUpsert.bind(eventsHandler));
+
+// start the module
+client.modules.loads();

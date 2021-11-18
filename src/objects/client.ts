@@ -1,5 +1,7 @@
+import * as path from 'node:path';
 import baileys, {SocketConfig} from '@slonbook/baileys-md';
 import {createLogger} from './logger';
+import {Modules} from './module';
 
 /**
  * @class Client
@@ -16,4 +18,7 @@ export class Client {
     ...this._options,
     logger: this.logger,
   });
+  public modules = new Modules(path.resolve(
+      __dirname, '..', 'commands',
+  ));
 }

@@ -56,14 +56,15 @@ export class Context {
   /**
      * Reply the message
      *
-     * @param {AnyMessageContent} content
+     * @param {string} text - Text Content
+     * @param {AnyMessageContent} anotherOptions - Send message options
      */
   public async reply(text: string, anotherOptions?: AnyMessageContent) {
     return await this.client.baileys.sendMessage(
             this.msg.key.remoteJid as string, {
-                'text': text,
-                ...anotherOptions,
-            }
+              'text': text,
+              ...anotherOptions,
+            },
     );
   }
 }

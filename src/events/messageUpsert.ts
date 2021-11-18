@@ -12,6 +12,12 @@ export const messageUpsertEvent =
     async (client: Client, data: MessageUpsert) => {
       if (data.messages.length) {
         const ctx = new Context(client, data.messages[0]);
-        await ctx.reply('apalo');
+        const cmd = ctx.client.modules.commands.get
+            (ctx.text.toLowerCase()) || [...ctx.client.modules.commands.values()]
+                .find((c) => c.alias?.includes(
+                    ctx.text.toLowerCase()));
+        if (cmd) {
+            await cmd.target(ctx);
+        }
       }
     };
