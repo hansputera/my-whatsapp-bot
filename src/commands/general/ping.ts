@@ -3,7 +3,7 @@ import {CommandFunc} from '../../types';
 import {Util} from '../../objects';
 
 const PingCommand: CommandFunc = async (ctx: Context) => {
-    await ctx.reply('Ping masuk!');
+    await ctx.reply('yoo masuk');
 };
 
 export default Util.makeCommandConfig({

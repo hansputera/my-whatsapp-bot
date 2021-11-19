@@ -1,6 +1,7 @@
 import {Client} from '../objects';
 import {proto, AnyMessageContent} from '@slonbook/baileys-md';
 import Long = require('long');
+import { prefixes } from '../config';
 
 /**
  * @class Context
@@ -26,6 +27,43 @@ export class Context {
      */
   public get isFromMe(): boolean {
     return this.msg.key.fromMe as boolean;
+  }
+
+  /**
+   * Get the arguments of message (only available if it is a command)
+   * 
+   * @return {string[]}
+   */
+  public get args(): string[] {
+      if (!this.isCommand()) return [];
+
+      return this.text.slice(this.getPrefix().length)
+        .split(/ +/g).slice(1);      
+  }
+
+  /**
+   * Get the prefix from the message
+   * 
+   * @return {string}
+   */
+  public getPrefix(): string {
+      if (!this.text) return '';
+      for (const prefix of prefixes) {
+          if (this.text.startsWith
+            (prefix.toLowerCase())) return prefix;
+      }
+
+      return '';
+  }
+
+  /**
+   * Knows the message is command.
+   * 
+   * @return {boolean}
+   */
+  public isCommand(): boolean {
+      if (!this.text) return false;
+      else return this.getPrefix().length > 0;
   }
 
   /**

@@ -17,6 +17,8 @@ export const messageUpsertEvent =
                 ' message was blocked because indicates as pending notification message');
             return;
         }
+
+        if (!ctx.isCommand()) return;
         const cmd = ctx.client.modules.commands.get
             (ctx.text.toLowerCase()) || [...ctx.client.modules.commands.values()]
                 .find((c) => c.alias?.includes(
