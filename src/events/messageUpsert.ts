@@ -1,6 +1,7 @@
 import {Context} from '../extends/context';
 import {Client} from '../objects';
 import {MessageUpsert} from '../types';
+import {cooldownMiddleware} from '../middleware';
 
 /**
  * Message Upsert Event Handler
@@ -13,18 +14,19 @@ export const messageUpsertEvent =
       if (data.messages.length) {
         const ctx = new Context(client, data.messages[0]);
         if (ctx.timestamp < ctx.client.startTime) {
-            ctx.client.logger.info(ctx.id +
-                ' message was blocked because indicates as pending notification message');
-            return;
+          ctx.client.logger.info(ctx.id +
+                ' message was blocked');
+          return;
         }
-
-        if (!ctx.isCommand()) return;
-        const cmd = ctx.client.modules.commands.get
-            (ctx.text.toLowerCase()) || [...ctx.client.modules.commands.values()]
-                .find((c) => c.alias?.includes(
-                    ctx.text.toLowerCase()));
+        const cmdName = ctx.getCommandName();
+        if (!cmdName) return;
+        const cmd = ctx.client.modules.commands.get(
+            cmdName.toLowerCase()) || [...ctx.client.modules.commands.values()]
+            .find((c) => c.alias?.includes(
+                cmdName.toLowerCase()));
         if (cmd) {
-            await cmd.target(ctx);
+          const continueExecute = await cooldownMiddleware(ctx);
+          if (continueExecute) await cmd.target(ctx);
         }
       }
     };

@@ -1,7 +1,8 @@
 import {Client} from '../objects';
 import {proto, AnyMessageContent} from '@slonbook/baileys-md';
 import Long = require('long');
-import { prefixes } from '../config';
+import {prefixes} from '../config';
+import {CommandInfo} from '../types';
 
 /**
  * @class Context
@@ -31,39 +32,72 @@ export class Context {
 
   /**
    * Get the arguments of message (only available if it is a command)
-   * 
+   *
+   * @param {boolean} withPrefix
+   * @return {string[]}
+   */
+  public getArgs(withPrefix: boolean = false): string[] {
+    if (!this.isCommand()) return [];
+
+    return this.text.slice(this.getPrefix().length)
+        .split(/ +/g).slice(withPrefix ? 0 : 1);
+  }
+
+  /**
+   * Get the arguments from command
    * @return {string[]}
    */
   public get args(): string[] {
-      if (!this.isCommand()) return [];
+    return this.getArgs();
+  }
 
-      return this.text.slice(this.getPrefix().length)
-        .split(/ +/g).slice(1);      
+  /**
+   * Get the command name from message
+   *
+   * @return {string}
+   */
+  public getCommandName(): string {
+    return this.getArgs(true)[0];
+  }
+
+  /**
+   * Get the command data from message
+   *
+   * @return {CommandInfo | undefined}
+   */
+  public get command(): CommandInfo | undefined {
+    const cmd = this.getCommandName();
+    if (!cmd) return undefined;
+
+    return this.client.modules.commands.get(
+        cmd.toLowerCase()) ||
+        [...this.client.modules.commands.values()]
+            .find((c) => c.alias?.includes(
+                cmd.toLowerCase()));
   }
 
   /**
    * Get the prefix from the message
-   * 
+   *
    * @return {string}
    */
   public getPrefix(): string {
-      if (!this.text) return '';
-      for (const prefix of prefixes) {
-          if (this.text.startsWith
-            (prefix.toLowerCase())) return prefix;
-      }
+    if (!this.text) return '';
+    const p = prefixes.find((p) => this.text.startsWith(
+        p.toLowerCase()),
+    );
 
-      return '';
+    return p ? p : '';
   }
 
   /**
    * Knows the message is command.
-   * 
+   *
    * @return {boolean}
    */
   public isCommand(): boolean {
-      if (!this.text) return false;
-      else return this.getPrefix().length > 0;
+    if (!this.text) return false;
+    else return this.getPrefix().length > 0;
   }
 
   /**
@@ -89,9 +123,9 @@ export class Context {
      * @return {number}
      */
   public get timestamp(): number {
-      if (this.msg.messageTimestamp instanceof Long) {
-          return this.msg.messageTimestamp.toInt() * 1000;
-      } else return this.msg.messageTimestamp as number;
+    if (this.msg.messageTimestamp instanceof Long) {
+      return this.msg.messageTimestamp.toInt() * 1000;
+    } else return this.msg.messageTimestamp as number;
   }
 
   /**
@@ -106,8 +140,8 @@ export class Context {
               'text': text,
               ...anotherOptions,
             }, {
-                quoted: this.msg,
-            }
+              quoted: this.msg,
+            },
     );
   }
 }

@@ -52,6 +52,9 @@ export class Modules {
         const defaultCmd: CommandInfo = require(
             path.resolve(
                 this.commandsPath, modFolder, cmdFile)).default;
+        if (!defaultCmd.cooldown) {
+          defaultCmd.cooldown = 5000;
+        }
         defaultCmd.module = modConfig.name;
         modConfig.commands.push(defaultCmd);
         this.commands.set(defaultCmd.name, defaultCmd);

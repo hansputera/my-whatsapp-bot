@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import {resolve as resolvePath} from 'node:path';
 import {unlinkSync, existsSync} from 'node:fs';
 
