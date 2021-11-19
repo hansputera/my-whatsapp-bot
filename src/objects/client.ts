@@ -21,4 +21,5 @@ export class Client {
   public modules = new Modules(path.resolve(
       __dirname, '..', 'commands',
   ));
+  public startTime = Date.now();
 }

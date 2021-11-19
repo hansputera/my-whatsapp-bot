@@ -1,5 +1,6 @@
 import {Client} from '../objects';
 import {proto, AnyMessageContent} from '@slonbook/baileys-md';
+import Long = require('long');
 
 /**
  * @class Context
@@ -47,10 +48,12 @@ export class Context {
 
   /**
      * Get the timestamp message
-     * @return {Long.Long | number}
+     * @return {number}
      */
-  public get timestamp(): Long.Long | number {
-    return this.msg.messageTimestamp as Long.Long | number;
+  public get timestamp(): number {
+      if (this.msg.messageTimestamp instanceof Long) {
+          return this.msg.messageTimestamp.toInt() * 1000;
+      } else return this.msg.messageTimestamp as number;
   }
 
   /**
@@ -64,7 +67,9 @@ export class Context {
             this.msg.key.remoteJid as string, {
               'text': text,
               ...anotherOptions,
-            },
+            }, {
+                quoted: this.msg,
+            }
     );
   }
 }

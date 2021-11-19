@@ -21,9 +21,6 @@ client.baileys.ev.on('connection.update', (conn) => {
     }
   } else if (conn.connection && conn.connection === 'open') {
     client.logger.info('WebSocket opened');
-  } else if (conn.receivedPendingNotifications) {
-      client.logger.info('Block all pending notification cuz i hate it');
-      return;
   }
 });
 

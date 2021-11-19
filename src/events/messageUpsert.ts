@@ -12,6 +12,11 @@ export const messageUpsertEvent =
     async (client: Client, data: MessageUpsert) => {
       if (data.messages.length) {
         const ctx = new Context(client, data.messages[0]);
+        if (ctx.timestamp < ctx.client.startTime) {
+            ctx.client.logger.info(ctx.id +
+                ' message was blocked because indicates as pending notification message');
+            return;
+        }
         const cmd = ctx.client.modules.commands.get
             (ctx.text.toLowerCase()) || [...ctx.client.modules.commands.values()]
                 .find((c) => c.alias?.includes(
