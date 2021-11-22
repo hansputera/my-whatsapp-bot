@@ -4,7 +4,7 @@ export type CommandFunc = (ctx: Context) => Promise<void>;
 export interface ModuleInfo {
     name: string;
     hide?: boolean;
-    commands?: ModuleInfo[];
+    commands?: CommandInfo[];
 }
 export interface CommandInfo {
     name: string;

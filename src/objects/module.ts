@@ -47,7 +47,8 @@ export class Modules {
               this.commandsPath, modFolder, '__config.js'), 'utf8')));
       modConfig.commands = [];
       for (const cmdFile of readdirSync(path.resolve(
-          this.commandsPath, modFolder)).filter((fl) => fl.endsWith('.js'))) {
+          this.commandsPath, modFolder)).filter((fl) => fl.endsWith('.js') &&
+            !fl.startsWith('__'))) {
         this.logger.info('Load ' + cmdFile + ' in ' + modFolder);
         const defaultCmd: CommandInfo = require(
             path.resolve(
