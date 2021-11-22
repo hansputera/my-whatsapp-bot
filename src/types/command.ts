@@ -17,3 +17,9 @@ export interface CommandInfo {
     target: CommandFunc;
     module?: string;
 }
+
+export interface CollectorOptions {
+    max: number;
+    time?: number;
+    validation: (ctx: Context) => boolean;
+}

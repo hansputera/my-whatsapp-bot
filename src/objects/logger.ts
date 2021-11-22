@@ -5,7 +5,13 @@ import pino from 'pino';
  * @param {string} serviceName - Service logger name.
  * @return {pino.Logger}
  */
-export const createLogger = (serviceName: string) => pino({
+export const createLogger = (serviceName: string): pino.Logger => pino({
   name: serviceName,
-  prettyPrint: true,
+  transport: {
+    target: 'pino-pretty',
+    options: {
+      colorize: true,
+      ignore: 'hostname',
+    },
+  },
 });

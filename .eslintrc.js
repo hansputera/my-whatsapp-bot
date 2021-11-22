@@ -15,5 +15,8 @@ module.exports = {
     '@typescript-eslint',
   ],
   'rules': {
+      'max-len': ['error', {
+          'ignoreTemplateLiterals': true,
+      }]
   },
 };

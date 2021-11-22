@@ -2,6 +2,7 @@ import * as path from 'node:path';
 import baileys, {SocketConfig} from '@slonbook/baileys-md';
 import {createLogger} from './logger';
 import {Modules} from './module';
+import {MessageCollector} from '../extends/collector';
 
 /**
  * @class Client
@@ -22,4 +23,5 @@ export class Client {
       __dirname, '..', 'commands',
   ));
   public startTime = Date.now();
+  public collectors: Map<string, MessageCollector> = new Map();
 }

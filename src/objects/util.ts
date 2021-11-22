@@ -12,15 +12,17 @@ const authPath = resolvePath(__dirname, '..', '..', 'auth.json');
  * @class Util
  */
 export class Util {
+  public static fetch = got;
   /**
      * Use this method if you want post a text to the hastebin site.
      * @param {string} text - A text want to post.
      * @return {string}
      */
   static async postToHastebin(text: string) {
-    const response = await got.post('https://www.toptal.com/developers/hastebin/documents', {
-      'body': text,
-    });
+    const response = await got.post(
+        'https://www.toptal.com/developers/hastebin/documents', {
+          'body': text,
+        });
     return 'https://www.toptal.com/developers/hastebin/raw/' +
      JSON.parse(response.body).key;
   }

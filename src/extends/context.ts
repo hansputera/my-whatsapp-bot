@@ -1,6 +1,6 @@
 import {Client} from '../objects';
 import {proto, AnyMessageContent} from '@slonbook/baileys-md';
-import Long = require('long');
+import Long from 'long';
 import {prefixes} from '../config';
 import {CommandInfo} from '../types';
 
@@ -12,7 +12,12 @@ export class Context {
      * @param {Client} client
      * @param {proto.IWebMessageInfo} msg
      */
-  constructor(public client: Client, public msg: proto.IWebMessageInfo) {}
+  constructor(public client: Client, public msg: proto.IWebMessageInfo) {
+    this.parseQuery();
+  }
+
+  public args: string[] = [];
+  public flags: string[] = [];
 
   /**
      * Message ID
@@ -44,20 +49,29 @@ export class Context {
   }
 
   /**
-   * Get the arguments from command
-   * @return {string[]}
-   */
-  public get args(): string[] {
-    return this.getArgs();
-  }
-
-  /**
    * Get the command name from message
    *
    * @return {string}
    */
   public getCommandName(): string {
     return this.getArgs(true)[0];
+  }
+
+  /**
+   * Parse message to args and flags
+   *
+   * @return {{args: string[], flags: string[]}}
+   */
+  private parseQuery(): { args: string[]; flags: string[]; } {
+    this.args = [];
+    this.flags = [];
+
+    for (const q of this.getArgs()) {
+      if (q.startsWith('--')) this.flags.push(q.slice(2).toLowerCase());
+      else this.args.push(q);
+    }
+
+    return {args: this.args, flags: this.flags};
   }
 
   /**
@@ -106,8 +120,25 @@ export class Context {
      */
   public get authorNumber(): string | undefined {
     return this.msg.participant ?
-            this.msg.participant.split('@')[0] :
-            undefined;
+            this.msg.participant.replace(
+                /\@.+/gi, '',
+            ) :
+            (this.isFromMe ?
+                this.client.baileys.user.id
+                    .replace(/\@.+/gi, '').split(':')[0] :
+                    this.currentJid());
+  }
+
+  /**
+   * Get current jid id
+   *
+   * @return {string}
+   */
+  public currentJid(): string {
+    return this.msg.key.remoteJid ?
+        this.msg.key.remoteJid.replace(
+            /\@.+/gi, '',
+        ) : '';
   }
 
   /**
@@ -115,6 +146,9 @@ export class Context {
      * @return {string}
      */
   public get text(): string {
+    if (this.msg.message?.extendedTextMessage) {
+      return this.msg.message.extendedTextMessage.text as string;
+    }
     return this.msg.message?.conversation as string;
   }
 
@@ -142,6 +176,72 @@ export class Context {
             }, {
               quoted: this.msg,
             },
+    );
+  }
+
+  /**
+   * Reply a message with audio
+   * @param {Buffer | string} audio - URL/Buffer audio
+   * @param {boolean} isVN - Is it voice note?
+   * @param {AnyMessageContent} anotherOptions - Send message options
+   */
+  public async replyWithAudio(audio: Buffer | string,
+      isVN: boolean = false, anotherOptions?: AnyMessageContent) {
+    return await this.client.baileys.sendMessage(
+          this.msg.key.remoteJid as string, {
+            'audio': typeof audio === 'string' ?
+                {
+                  'url': audio,
+                } : audio,
+            'pttAudio': isVN,
+            ...anotherOptions,
+          }, {
+            'quoted': this.msg,
+          },
+    );
+  }
+
+  /**
+   * Reply a message with video
+   *
+   * @param {Buffer | string} video - Video source want to send.
+   * @param {string?} caption - Video caption
+   * @param {AnyMessageContent} anotherOptions - Send message options
+   */
+  public async replyWithVideo(video: Buffer | string,
+      caption?: string, anotherOptions?: AnyMessageContent) {
+    if (!anotherOptions) {
+      (anotherOptions as unknown) = {};
+    }
+    if (caption) {
+      (anotherOptions as Record<string, unknown>)['caption'] =
+        caption;
+    }
+    return await this.client.baileys.sendMessage(
+          this.msg.key.remoteJid as string, {
+            'video': typeof video === 'string' ?
+                {
+                  'url': video,
+                } : video,
+            ...anotherOptions,
+          }, {
+            'quoted': this.msg,
+          },
+    );
+  }
+
+  /**
+   * Only send a message without reply.
+   *
+   * @param {string} text - Send a text
+   * @param {AnyMessageContent} anotherOptions - Send message options
+   */
+  public async send(text: string, anotherOptions?: AnyMessageContent) {
+    return await this.client.baileys.sendMessage(
+          this.msg.key.remoteJid as string, {
+            'text': text,
+            ...anotherOptions,
+          },
     );
   }
 }

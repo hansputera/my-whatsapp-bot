@@ -1,3 +1,3 @@
-import * as IORedis from 'ioredis';
+import IORedis from 'ioredis';
 
 export const redis = new IORedis(process.env.REDIS);

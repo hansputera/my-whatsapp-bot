@@ -4,6 +4,7 @@ import {redis} from '../db/redis';
 export const cooldownMiddleware = async (
     ctx: Context,
 ) => {
+  if (!ctx.authorNumber) return false;
   const user = await redis.get('cooldown-' + ctx.authorNumber as string);
   if (user && JSON.parse(user).cooldown >= Date.now()) {
     if (!JSON.parse(user).warned) {
@@ -12,7 +13,7 @@ export const cooldownMiddleware = async (
             'cooldown': JSON.parse(user).cooldown,
             'warned': true,
           }));
-      await ctx.reply('You\'re in a waiting room user, please wait.');
+      await ctx.reply('You\'re in a cooldown mode, please wait.');
     }
     return false;
   }

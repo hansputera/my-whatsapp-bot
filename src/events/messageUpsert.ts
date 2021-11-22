@@ -1,7 +1,7 @@
 import {Context} from '../extends/context';
 import {Client} from '../objects';
 import {MessageUpsert} from '../types';
-import {cooldownMiddleware} from '../middleware';
+import {cooldownMiddleware, messageCollector} from '../middleware';
 
 /**
  * Message Upsert Event Handler
@@ -18,6 +18,10 @@ export const messageUpsertEvent =
                 ' message was blocked');
           return;
         }
+
+        const collectorActive = await messageCollector(ctx);
+        if (!collectorActive) return;
+
         const cmdName = ctx.getCommandName();
         if (!cmdName) return;
         const cmd = ctx.client.modules.commands.get(
@@ -26,7 +30,9 @@ export const messageUpsertEvent =
                 cmdName.toLowerCase()));
         if (cmd) {
           const continueExecute = await cooldownMiddleware(ctx);
-          if (continueExecute) await cmd.target(ctx);
+          if (continueExecute) {
+            await cmd.target(ctx);
+          }
         }
       }
     };

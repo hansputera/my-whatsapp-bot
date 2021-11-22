@@ -12,7 +12,9 @@
     "ioredis": "^4.28.0",
     "pino": "^7.2.0",
     "pino-pretty": "^7.2.0",
-    "qrcode": "^1.4.4"
+    "qrcode": "^1.4.4",
+    "ytdl-core": "^4.9.1",
+    "ytsr": "^3.5.3"
   },
   "devDependencies": {
     "@types/ioredis": "^4.28.1",
