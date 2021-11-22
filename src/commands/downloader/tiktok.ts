@@ -56,7 +56,7 @@ const tiktokDownloaderCommand: CommandFunc = async (
 
         const json = JSON.parse(response.body);
         if (json.error) {
-          await ctx.reply('Can you try again please? Maybe url is not valid or another issue');
+          await ctx.reply('Can you try again please? Maybe the url is not valid or another issue');
           return;
         } else {
           if (json.provider === 'tikmate' || json.provider === 'dltik') {

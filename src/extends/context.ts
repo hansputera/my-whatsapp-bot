@@ -43,8 +43,17 @@ export class Context {
    */
   public getArgs(withPrefix: boolean = false): string[] {
     if (!this.isCommand()) return [];
+    let text = this.text;
+    const extendedMessage = this.msg.message?.extendedTextMessage;
 
-    return this.text.slice(this.getPrefix().length)
+    if (extendedMessage && extendedMessage.contextInfo &&
+            extendedMessage.contextInfo.quotedMessage) {
+                text += ' ' +
+                    extendedMessage.contextInfo
+                        .quotedMessage.conversation;
+    }
+    
+    return text.slice(this.getPrefix().length)
         .split(/ +/g).slice(withPrefix ? 0 : 1);
   }
 
