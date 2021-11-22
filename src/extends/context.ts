@@ -48,11 +48,11 @@ export class Context {
 
     if (extendedMessage && extendedMessage.contextInfo &&
             extendedMessage.contextInfo.quotedMessage) {
-                text += ' ' +
+      text += ' ' +
                     extendedMessage.contextInfo
                         .quotedMessage.conversation;
     }
-    
+
     return text.slice(this.getPrefix().length)
         .split(/ +/g).slice(withPrefix ? 0 : 1);
   }

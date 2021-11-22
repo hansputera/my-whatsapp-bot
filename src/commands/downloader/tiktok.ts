@@ -16,19 +16,19 @@ const sendTikTokFunc = async (
     ctx: Context,
     data: TikTokResponse,
 ) => {
-    const response = await Util.fetch(
-        data.result.urls[0], {
-            followRedirect: true,
-        }
-    );
-    let text = '';
+  const response = await Util.fetch(
+      data.result.urls[0], {
+        followRedirect: true,
+      },
+  );
+  let text = '';
 
-    if (data.provider === 'savefrom') {
-        text = '*' + data.result.advanced?.videoTitle + '* - *' +
+  if (data.provider === 'savefrom') {
+    text = '*' + data.result.advanced?.videoTitle + '* - *' +
             data.result.advanced?.videoDuration + '*';
-    }
+  }
 
-    await ctx.replyWithVideo(response.rawBody, text.length ? text : '-');
+  await ctx.replyWithVideo(response.rawBody, text.length ? text : '-');
 };
 
 const tiktokDownloaderCommand: CommandFunc = async (
@@ -56,12 +56,15 @@ const tiktokDownloaderCommand: CommandFunc = async (
 
         const json = JSON.parse(response.body);
         if (json.error) {
-          await ctx.reply('Can you try again please? Maybe the url is not valid or another issue');
+          await ctx.reply(
+              'Can you try again please? ' +
+                'Maybe the url is not valid or another issue',
+          );
           return;
         } else {
           if (json.provider === 'tikmate' || json.provider === 'dltik') {
-              await tiktokDownloaderCommand(new Context(ctx.client, ctx.msg));
-              return;
+            await tiktokDownloaderCommand(new Context(ctx.client, ctx.msg));
+            return;
           }
           await redis.set(url, response.body);
           await sendTikTokFunc(ctx, json);
@@ -70,8 +73,8 @@ const tiktokDownloaderCommand: CommandFunc = async (
       } catch (e) {
         console.log((e as any).response.body);
         if (/expected/gi.test((e as any).response.body)) {
-            await ctx.reply('Maybe your url isn\'t valid, try again please!');
-            return;
+          await ctx.reply('Maybe your url isn\'t valid, try again please!');
+          return;
         }
         await ctx.reply('Sorry, something was wrong. Try again!');
       }
