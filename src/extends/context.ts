@@ -3,6 +3,7 @@ import {proto, AnyMessageContent} from '@slonbook/baileys-md';
 import Long from 'long';
 import {prefixes} from '../config';
 import {CommandInfo} from '../types';
+import {Sticker} from './messages';
 
 /**
  * @class Context
@@ -13,7 +14,7 @@ export class Context {
      * @param {proto.IWebMessageInfo} msg
      */
   constructor(public client: Client, public msg: proto.IWebMessageInfo) {
-    this.parseQuery();
+    this.reloadQuery();
   }
 
   public args: string[] = [];
@@ -71,7 +72,7 @@ export class Context {
    *
    * @return {{args: string[], flags: string[]}}
    */
-  private parseQuery(): { args: string[]; flags: string[]; } {
+  public reloadQuery(): { args: string[]; flags: string[]; } {
     this.args = [];
     this.flags = [];
 
@@ -114,6 +115,23 @@ export class Context {
   }
 
   /**
+   * Get replied message from this message
+   *
+   * @return {ContextInfo | undefined}
+   */
+  public getReply(): ContextInfo | undefined {
+    if (this.msg.message?.extendedTextMessage &&
+            this.msg.message.extendedTextMessage.contextInfo) {
+      return new ContextInfo(
+          this.msg.message.extendedTextMessage.contextInfo,
+          this.currentJid(),
+          this.client,
+      );
+    }
+    return undefined;
+  }
+
+  /**
    * Knows the message is command.
    *
    * @return {boolean}
@@ -148,6 +166,18 @@ export class Context {
         this.msg.key.remoteJid.replace(
             /\@.+/gi, '',
         ) : '';
+  }
+
+  /**
+   * Get sticker from this message
+   *
+   * @return {Sticker | undefined}
+   */
+  public get sticker(): Sticker | undefined {
+    if (this.msg.message?.stickerMessage) {
+      return new Sticker(
+          this.msg.message.stickerMessage);
+    } else return undefined;
   }
 
   /**
@@ -254,3 +284,30 @@ export class Context {
     );
   }
 }
+
+
+/**
+ * @class ContextInfo
+ */
+export class ContextInfo extends Context {
+  /**
+       *
+       * @param {proto.IContextInfo} raw - Context Info
+       * @param {string} remoteJid - Remote JID
+       * @param {Client} client - Bot Client
+       */
+  constructor(raw: proto.IContextInfo, remoteJid: string, client: Client) {
+    super(client, {
+      'key': {
+        'fromMe': client.baileys.user.id
+            .replace(/\@.+/gi, '').split(':')[0] ===
+                          raw.participant?.replace(/\@.+/gi, ''),
+        'id': raw.stanzaId,
+        'remoteJid': remoteJid,
+      },
+      'message': raw.quotedMessage,
+      'messageTimestamp': Date.now(),
+    });
+  }
+}
+

@@ -12,7 +12,7 @@ const HelpCommand: CommandFunc = async (
                 [...ctx.client.modules.mods.values()].map(
                     (m) => '*- ' + m.name + '*\n' +
                         m.commands?.map(
-                            (c) => `${c.name}${c.alias ? ' (' + c.alias.join(',') + ')' : ''}`,
+                            (c) => c.name,
                         ).join(', ')).join('\n'));
   } else {
     const cmd = ctx.client.modules
