@@ -51,8 +51,30 @@ export const YouTubeDownloader: CommandFunc = async (
         (v) => v.type === 'video',
     ) as ytsr.Video[];
 
-    const durs = (searchResults[0].duration?.split(':') as string[]);
-    if (searchResults[0].isLive) {
+    const contextSelect = await ctx.reply('Please reply this message with which one number bellow:\n\n' +
+        searchResults.map((s, i) => `${i+1}. ${s.title}`).join('\n'));
+    const collector = ctx.getCollector({
+        max: 1,
+        validation: (ctxC) => ctxC.authorNumber === ctx.authorNumber,
+    });
+
+    collector.start();
+    await collector.wait();
+
+    await contextSelect.delete();
+    const num = collector.contexts[0].text;
+    if (isNaN(num as unknown as number)) {
+        await ctx.reply('Invalid option!');
+        return;
+    } else {
+        if (!searchResults.at(parseInt(num)-1)) {
+            await ctx.reply('Invalid option, give me a number that like "1" or "2"');
+            return;
+        }
+    }
+
+    const durs = (searchResults[parseInt(num)-1].duration?.split(':') as string[]);
+    if (searchResults[parseInt(num)].isLive) {
       await ctx.reply('This video is live stream, i can\'t download!');
       return;
     } else if (
@@ -61,14 +83,16 @@ export const YouTubeDownloader: CommandFunc = async (
       await ctx.reply('This video duration is too long, oh god *' +
         durs[0] + ' hours* :<');
       return;
-    } else if (durs.length == 2 && parseInt(durs[0]) > 20) {
+    } else if (durs.length == 2 && parseInt(durs[parseInt(
+        num
+    )-1]) > 20) {
       await ctx.reply('This video duration is too long, i can\'t download it!');
       return;
     }
 
-    info.name = searchResults[0].title;
-    info.url = searchResults[0].url;
-    info.text = `Downloading *${searchResults[0].title}* with duration *${searchResults[0].duration}*\nChannel: *${searchResults[0].author?.name}*\nURL: *${searchResults[0].url}*\nDescription:\n\n${searchResults[0].description ?? '-'}`;
+    info.name = searchResults[parseInt(num)-1].title;
+    info.url = searchResults[parseInt(num)-1].url;
+    info.text = `Downloading *${searchResults[parseInt(num)-1].title}* with duration *${searchResults[parseInt(num)-1].duration}*\nChannel: *${searchResults[parseInt(num)-1].author?.name}*\nURL: *${searchResults[parseInt(num)-1].url}*\nDescription:\n\n${searchResults[parseInt(num)-1].description ?? '-'}`;
   }
 
   await ctx.reply(info.text);

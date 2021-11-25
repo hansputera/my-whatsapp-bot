@@ -2,3 +2,4 @@ auth.json
 node_modules
 dist
 .env
+src/config.ts

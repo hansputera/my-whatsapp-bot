@@ -7,15 +7,14 @@ export const messageCollector = async (
       ctx.authorNumber + '-' + ctx.currentJid(),
   );
 
-  if (collectorSession &&
-            collectorSession.contexts.length >=
-                collectorSession.maxMessages) {
-    collectorSession.destroy();
-  }
-
   if (collectorSession && collectorSession.validate(ctx)) {
     collectorSession.events.emit('new', ctx);
     collectorSession.contexts.push(ctx);
+
+    if (collectorSession.contexts.length
+            >= collectorSession.maxMessages) {
+                collectorSession.destroy();
+            }
     return false;
   } else {
     return true;

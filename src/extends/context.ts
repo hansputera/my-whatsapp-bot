@@ -2,7 +2,8 @@ import {Client} from '../objects';
 import {proto, AnyMessageContent} from '@slonbook/baileys-md';
 import Long from 'long';
 import {prefixes} from '../config';
-import {CommandInfo} from '../types';
+import {MessageCollector} from './collector';
+import {CommandInfo,CollectorOptions} from '../types';
 import {Sticker, Image, Video} from './messages';
 
 /**
@@ -157,6 +158,15 @@ export class Context {
   }
 
   /**
+   * Get collector instance.
+   * @param {CollectorOptions} options - Message Collector options.
+   * @return {MessageCollector}
+   */
+  public getCollector(options?: CollectorOptions) {
+      return new MessageCollector(this, options);
+  }
+
+  /**
    * Get current jid id
    *
    * @return {string}
@@ -235,14 +245,14 @@ export class Context {
      * @param {AnyMessageContent} anotherOptions - Send message options
      */
   public async reply(text: string, anotherOptions?: AnyMessageContent) {
-    return await this.client.baileys.sendMessage(
+    return new Context(this.client, await this.client.baileys.sendMessage(
             this.msg.key.remoteJid as string, {
               'text': text,
               ...anotherOptions,
             }, {
               quoted: this.msg,
             },
-    );
+    ));
   }
 
   /**
@@ -253,7 +263,7 @@ export class Context {
    */
   public async replyWithAudio(audio: Buffer | string,
       isVN: boolean = false, anotherOptions?: AnyMessageContent) {
-    return await this.client.baileys.sendMessage(
+    return new Context(this.client, await this.client.baileys.sendMessage(
           this.msg.key.remoteJid as string, {
             'audio': typeof audio === 'string' ?
                 {
@@ -264,7 +274,7 @@ export class Context {
           }, {
             'quoted': this.msg,
           },
-    );
+    ));
   }
 
   /**
@@ -283,7 +293,7 @@ export class Context {
       (anotherOptions as Record<string, unknown>)['caption'] =
         caption;
     }
-    return await this.client.baileys.sendMessage(
+    return new Context(this.client, await this.client.baileys.sendMessage(
           this.msg.key.remoteJid as string, {
             'video': typeof video === 'string' ?
                 {
@@ -293,7 +303,7 @@ export class Context {
           }, {
             'quoted': this.msg,
           },
-    );
+    ));
   }
 
   /**
@@ -303,12 +313,12 @@ export class Context {
    * @param {AnyMessageContent} anotherOptions - Send message options
    */
   public async send(text: string, anotherOptions?: AnyMessageContent) {
-    return await this.client.baileys.sendMessage(
+    return new Context(this.client, await this.client.baileys.sendMessage(
           this.msg.key.remoteJid as string, {
             'text': text,
             ...anotherOptions,
           },
-    );
+    ));
   }
 
   /**
@@ -325,7 +335,7 @@ export class Context {
       (anotherOptions as Record<string, unknown>)['caption'] =
           caption;
     }
-    return await this.client.baileys.sendMessage(
+    return new Context(this.client, await this.client.baileys.sendMessage(
           this.msg.key.remoteJid as string, {
             'image': typeof photo === 'string' ?
                 {'url': photo} : photo,
@@ -334,7 +344,7 @@ export class Context {
           }, {
             'quoted': this.msg,
           },
-    );
+    ));
   }
 
   /**
@@ -343,7 +353,7 @@ export class Context {
    * @param {Buffer | string} sticker
    */
   public async replyWithSticker(sticker: Buffer | string) {
-    return await this.client.baileys.sendMessage(
+    return new Context(this.client, await this.client.baileys.sendMessage(
           this.msg.key.remoteJid as string, {
             'sticker': typeof sticker === 'string' ?
                 {
@@ -352,7 +362,18 @@ export class Context {
           }, {
             'quoted': this.msg,
           },
-    );
+    ));
+  }
+
+  /**
+   * Delete this message
+   */
+  public async delete() {
+      return await this.client.baileys.sendMessage(
+          this.msg.key.remoteJid as string, {
+              'delete': this.msg.key,
+          }
+      );
   }
 }
 
