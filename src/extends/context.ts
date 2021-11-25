@@ -3,7 +3,7 @@ import {proto, AnyMessageContent} from '@slonbook/baileys-md';
 import Long from 'long';
 import {prefixes} from '../config';
 import {MessageCollector} from './collector';
-import {CommandInfo,CollectorOptions} from '../types';
+import {CommandInfo, CollectorOptions} from '../types';
 import {Sticker, Image, Video} from './messages';
 
 /**
@@ -163,7 +163,7 @@ export class Context {
    * @return {MessageCollector}
    */
   public getCollector(options?: CollectorOptions) {
-      return new MessageCollector(this, options);
+    return new MessageCollector(this, options);
   }
 
   /**
@@ -176,6 +176,25 @@ export class Context {
         this.msg.key.remoteJid.replace(
             /\@.+/gi, '',
         ) : '';
+  }
+
+  /**
+   * Identify it is a group?
+   *
+   * @return {boolean}
+   */
+  public get isGroup(): boolean {
+    return this.currentJid().split('-')
+        .length == 2;
+  }
+
+  /**
+   * Identify it is a private message.
+   *
+   * @return {boolean}
+   */
+  public get isPM(): boolean {
+    return !this.isGroup;
   }
 
   /**
@@ -369,11 +388,11 @@ export class Context {
    * Delete this message
    */
   public async delete() {
-      return await this.client.baileys.sendMessage(
+    return await this.client.baileys.sendMessage(
           this.msg.key.remoteJid as string, {
-              'delete': this.msg.key,
-          }
-      );
+            'delete': this.msg.key,
+          },
+    );
   }
 }
 

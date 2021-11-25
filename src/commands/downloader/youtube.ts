@@ -51,11 +51,12 @@ export const YouTubeDownloader: CommandFunc = async (
         (v) => v.type === 'video',
     ) as ytsr.Video[];
 
-    const contextSelect = await ctx.reply('Please reply this message with which one number bellow:\n\n' +
+    const contextSelect = await ctx.reply('Please reply this message' +
+        ' with which one number bellow:\n\n' +
         searchResults.map((s, i) => `${i+1}. ${s.title}`).join('\n'));
     const collector = ctx.getCollector({
-        max: 1,
-        validation: (ctxC) => ctxC.authorNumber === ctx.authorNumber,
+      max: 1,
+      validation: (ctxC) => ctxC.authorNumber === ctx.authorNumber,
     });
 
     collector.start();
@@ -64,16 +65,18 @@ export const YouTubeDownloader: CommandFunc = async (
     await contextSelect.delete();
     const num = collector.contexts[0].text;
     if (isNaN(num as unknown as number)) {
-        await ctx.reply('Invalid option!');
-        return;
+      await ctx.reply('Invalid option!');
+      return;
     } else {
-        if (!searchResults.at(parseInt(num)-1)) {
-            await ctx.reply('Invalid option, give me a number that like "1" or "2"');
-            return;
-        }
+      if (!searchResults.at(parseInt(num)-1)) {
+        await ctx.reply('Invalid option, gi' +
+            've me a number that like "1" or "2"');
+        return;
+      }
     }
 
-    const durs = (searchResults[parseInt(num)-1].duration?.split(':') as string[]);
+    const durs = (searchResults[parseInt(num)-1
+    ].duration?.split(':') as string[]);
     if (searchResults[parseInt(num)].isLive) {
       await ctx.reply('This video is live stream, i can\'t download!');
       return;
@@ -84,7 +87,7 @@ export const YouTubeDownloader: CommandFunc = async (
         durs[0] + ' hours* :<');
       return;
     } else if (durs.length == 2 && parseInt(durs[parseInt(
-        num
+        num,
     )-1]) > 20) {
       await ctx.reply('This video duration is too long, i can\'t download it!');
       return;

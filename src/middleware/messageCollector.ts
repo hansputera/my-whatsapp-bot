@@ -11,10 +11,10 @@ export const messageCollector = async (
     collectorSession.events.emit('new', ctx);
     collectorSession.contexts.push(ctx);
 
-    if (collectorSession.contexts.length
-            >= collectorSession.maxMessages) {
-                collectorSession.destroy();
-            }
+    if (collectorSession.contexts.length >=
+            collectorSession.maxMessages) {
+      collectorSession.destroy();
+    }
     return false;
   } else {
     return true;

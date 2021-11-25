@@ -2,6 +2,7 @@ import {Context} from '../extends/context';
 import {Client} from '../objects';
 import {MessageUpsert} from '../types';
 import {cooldownMiddleware, messageCollector} from '../middleware';
+import {devs} from '../config';
 
 /**
  * Message Upsert Event Handler
@@ -29,6 +30,12 @@ export const messageUpsertEvent =
             .find((c) => c.alias?.includes(
                 cmdName.toLowerCase()));
         if (cmd) {
+          if (cmd.groupOnly && ctx.isPM) return;
+          else if (cmd.dmOnly && ctx.isGroup) return;
+          else if (cmd.devOnly && !devs.includes(ctx.authorNumber as never)) {
+            return;
+          }
+
           const continueExecute = await cooldownMiddleware(ctx);
           if (continueExecute) {
             await cmd.target(ctx);
