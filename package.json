@@ -13,6 +13,7 @@
     "pino": "^7.2.0",
     "pino-pretty": "^7.2.0",
     "qrcode": "^1.4.4",
+    "sharp": "^0.29.3",
     "ytdl-core": "^4.9.1",
     "ytsr": "^3.5.3"
   },
@@ -20,6 +21,7 @@
     "@types/ioredis": "^4.28.1",
     "@types/node": "^16.11.7",
     "@types/qrcode": "^1.4.1",
+    "@types/sharp": "^0.29.4",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "eslint": "^8.2.0",

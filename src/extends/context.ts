@@ -3,7 +3,7 @@ import {proto, AnyMessageContent} from '@slonbook/baileys-md';
 import Long from 'long';
 import {prefixes} from '../config';
 import {CommandInfo} from '../types';
-import {Sticker} from './messages';
+import {Sticker, Image, Video} from './messages';
 
 /**
  * @class Context
@@ -72,7 +72,7 @@ export class Context {
    *
    * @return {{args: string[], flags: string[]}}
    */
-  public reloadQuery(): { args: string[]; flags: string[]; } {
+  private reloadQuery(): { args: string[]; flags: string[]; } {
     this.args = [];
     this.flags = [];
 
@@ -181,12 +181,39 @@ export class Context {
   }
 
   /**
+   * Get an image from this message
+   *
+   * @return {Image | undefined}
+   */
+  public get image(): Image | undefined {
+    if (this.msg.message?.imageMessage) {
+      return new Image(
+          this.msg.message.imageMessage);
+    } else return undefined;
+  }
+
+  /**
+   * Get a video from this message
+   *
+   * @return {Video | undefined}
+   */
+  public get video(): Video | undefined {
+    if (this.msg.message?.videoMessage) {
+      return new Video(
+          this.msg.message.videoMessage,
+      );
+    } else return undefined;
+  }
+
+  /**
      * Get the message text content
      * @return {string}
      */
   public get text(): string {
     if (this.msg.message?.extendedTextMessage) {
       return this.msg.message.extendedTextMessage.text as string;
+    } else if (this.image && this.image.caption) {
+      return this.image.caption;
     }
     return this.msg.message?.conversation as string;
   }
@@ -280,6 +307,50 @@ export class Context {
           this.msg.key.remoteJid as string, {
             'text': text,
             ...anotherOptions,
+          },
+    );
+  }
+
+  /**
+   * Reply a message with photo
+   *
+   * @param {Buffer | string} photo - A Photo
+   * @param {string?} caption - A Photo caption
+   * @param {AnyMessageContent?} anotherOptions - Send message options
+   */
+  public async replyWithPhoto(photo: Buffer | string,
+      caption?: string, anotherOptions?: AnyMessageContent) {
+    if (!anotherOptions) (anotherOptions as unknown) = {};
+    else if (caption) {
+      (anotherOptions as Record<string, unknown>)['caption'] =
+          caption;
+    }
+    return await this.client.baileys.sendMessage(
+          this.msg.key.remoteJid as string, {
+            'image': typeof photo === 'string' ?
+                {'url': photo} : photo,
+            'mimetype': 'image/png',
+            ...anotherOptions,
+          }, {
+            'quoted': this.msg,
+          },
+    );
+  }
+
+  /**
+   * Reply a message using sticker
+   *
+   * @param {Buffer | string} sticker
+   */
+  public async replyWithSticker(sticker: Buffer | string) {
+    return await this.client.baileys.sendMessage(
+          this.msg.key.remoteJid as string, {
+            'sticker': typeof sticker === 'string' ?
+                {
+                  'url': sticker,
+                } : sticker,
+          }, {
+            'quoted': this.msg,
           },
     );
   }

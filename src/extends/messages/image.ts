@@ -1,20 +1,29 @@
+import {MessageMediaBase} from '.';
 import {proto} from '@slonbook/baileys-md';
 import {Util} from '../../objects';
-import {MessageMediaBase} from '.';
 
 /**
- * @class Sticker
+ * @class Image
  */
-export class Sticker extends MessageMediaBase {
+export class Image extends MessageMediaBase {
   /**
-     * @param {proto.StickerMessage} raw - Sticker raw message
+     * @param {proto.IImageMessage} raw
      */
-  constructor(public raw: proto.IStickerMessage) {
+  constructor(public raw: proto.IImageMessage) {
     super(raw);
   }
 
   /**
-     * Get sticker size
+   * Get caption from the image
+   *
+   * @return {string | undefined}
+   */
+  public get caption(): string | undefined {
+    return this.raw.caption as string ?? undefined;
+  }
+
+  /**
+     * Get image size
      *
      * @return {{height:number,width:number}}
      */
@@ -26,15 +35,6 @@ export class Sticker extends MessageMediaBase {
   }
 
   /**
-     * Sticker is animated?
-     *
-     * @return {boolean}
-     */
-  public get animated(): boolean {
-    return this.raw.isAnimated as boolean;
-  }
-
-  /**
    * Fetch encrypted url sticker file.
    *
    * @return {Promise<Buffer>}
@@ -42,7 +42,7 @@ export class Sticker extends MessageMediaBase {
   public async retrieveFile(): Promise<Buffer> {
     return await new Promise((resolve) => {
       let buffer = Buffer.alloc(0);
-      const stream = Util.decryptMedia(this.encryptedUrl, this.key, 'sticker');
+      const stream = Util.decryptMedia(this.encryptedUrl, this.key, 'image');
       stream.on('data', (chunk) => {
         buffer = Buffer.concat([buffer, Buffer.from(chunk)]);
       });

@@ -2,10 +2,14 @@ import got from 'got';
 import {
   AuthenticationState, BufferJSON,
   initInMemoryKeyStore,
+  MediaType,
+  getMediaKeys,
 } from '@slonbook/baileys-md';
 import {resolve as resolvePath} from 'node:path';
-import {readFileSync, writeFileSync} from 'fs';
+import {readFileSync, writeFileSync} from 'node:fs';
 import {CommandInfo} from '../types';
+import {createDecipheriv} from 'crypto';
+import {Transform} from 'node:stream';
 
 const authPath = resolvePath(__dirname, '..', '..', 'auth.json');
 /**
@@ -59,5 +63,52 @@ export class Util {
    */
   static makeCommandConfig(data: CommandInfo): CommandInfo {
     return data;
+  }
+
+  /**
+   * @param {string} url
+   * @param {Uint8Array} mediaKey
+   * @param {MediaType} type
+   *
+   * @return {Transform}
+   */
+  static decryptMedia(
+      url: string,
+      mediaKey: Uint8Array,
+      type: MediaType): Transform {
+    // source: https://github.com/adiwajshing/baileys.git
+    const responseMedia = this.fetch(url, {'isStream': true});
+    let remainBytes = Buffer.from([]);
+
+    const {cipherKey, iv} = getMediaKeys(mediaKey, type);
+    const aes = createDecipheriv('aes-256-cbc', cipherKey, iv);
+    aes.setAutoPadding(false); // https://github.com/nodejs/node/issues/2794
+
+    const pipeHandler = new Transform({
+      transform(chunk, _, callback) {
+        let data = Buffer.concat([remainBytes, chunk]);
+        const decryptLength =
+                    Math.floor(data.length / 16) * 16;
+        remainBytes = data.slice(decryptLength);
+        data = data.slice(0, decryptLength);
+
+        try {
+          this.push(aes.update(data));
+          callback();
+        } catch (error) {
+          callback(error as Error);
+        }
+      },
+      final(callback) {
+        try {
+          this.push(aes.final());
+          callback();
+        } catch (error) {
+          callback(error as Error);
+        }
+      },
+    });
+
+    return responseMedia.pipe(pipeHandler, {end: true});
   }
 }
