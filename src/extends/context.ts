@@ -4,18 +4,21 @@ import Long from 'long';
 import {prefixes} from '../config';
 import {MessageCollector} from './collector';
 import {CommandInfo, CollectorOptions} from '../types';
+import {createLogger} from '../objects';
 import {Sticker, Image, Video} from './messages';
 
 /**
  * @class Context
  */
 export class Context {
+  public logger = createLogger('context-' + this.id);
   /**
      * @param {Client} client
      * @param {proto.IWebMessageInfo} msg
      */
   constructor(public client: Client, public msg: proto.IWebMessageInfo) {
     this.reloadQuery();
+    this.logger.info('Context initialized');
   }
 
   public args: string[] = [];
@@ -162,7 +165,7 @@ export class Context {
    * @param {CollectorOptions} options - Message Collector options.
    * @return {MessageCollector}
    */
-  public getCollector(options?: CollectorOptions) {
+  public getCollector(options?: CollectorOptions): MessageCollector {
     return new MessageCollector(this, options);
   }
 
