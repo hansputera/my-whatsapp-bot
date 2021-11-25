@@ -179,7 +179,7 @@ export class Context {
   }
 
   /**
-   * Identify it is a group?
+   * Identify is it a group?
    *
    * @return {boolean}
    */
@@ -189,7 +189,7 @@ export class Context {
   }
 
   /**
-   * Identify it is a private message.
+   * Identify is it a private message?.
    *
    * @return {boolean}
    */
