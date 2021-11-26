@@ -29,9 +29,6 @@ function initSock(): void {
   const eventsHandler = new EventHandler(client);
 
   client.baileys.ev.on('connection.update', (conn) => {
-    if (conn.isNewLogin) {
-      client.logger.info('New Login detected');
-    }
     if (conn.qr) {
       client.logger.info('QR Generated');
       qr.toFile(resolvePath(__dirname, '..', 'qr.png'), conn.qr);
@@ -39,9 +36,7 @@ function initSock(): void {
       if ((conn.lastDisconnect?.error as Boom).output.statusCode !==
             DisconnectReason.loggedOut) {
         client.logger.info('Trying to reconnect');
-        client.logger.warn('Clearing modules');
         client.modules.free();
-        client.logger.warn('Modules cleared, reconnecting...');
         initSock();
       }
       if (existsSync(resolvePath(__dirname, '..', 'qr.png'))) {
@@ -52,11 +47,7 @@ function initSock(): void {
     }
   });
 
-  client.baileys.ev.on('creds.update', () => {
-    client.logger.info('Authentication credentials has updated');
-
-    saveState();
-  });
+  client.baileys.ev.on('creds.update', saveState);
 
   /** Main events */
 

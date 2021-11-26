@@ -18,7 +18,6 @@ export class Context {
      */
   constructor(public client: Client, public msg: proto.IWebMessageInfo) {
     this.reloadQuery();
-    this.logger.info('Context initialized');
   }
 
   public args: string[] = [];
