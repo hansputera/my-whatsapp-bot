@@ -352,7 +352,7 @@ export class Context {
   public async replyWithPhoto(photo: Buffer | string,
       caption?: string, anotherOptions?: AnyMessageContent) {
     if (!anotherOptions) (anotherOptions as unknown) = {};
-    else if (caption) {
+    if (caption) {
       (anotherOptions as Record<string, unknown>)['caption'] =
           caption;
     }

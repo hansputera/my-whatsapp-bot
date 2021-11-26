@@ -38,16 +38,16 @@ export class Util {
 
   /**
    * Parse a duration in miliseconds to human readable.
-   * 
+   *
    * @param {number} ms
    * @param {prettyMs.Options} options
    * @return {string}
    */
   static parseDuration(ms: number, options?: prettyMs.Options): string {
     return prettyMs(ms, {
-        colonNotation: true,
-        secondsDecimalDigits: 0,
-        ...options,
+      colonNotation: true,
+      secondsDecimalDigits: 0,
+      ...options,
     });
   }
 
