@@ -16,6 +16,7 @@ export class MessageCollector {
     max: 3,
     validation: () => true,
   }) {
+      console.log('aa');
     if (!options.time) options.time = 30000;
     else if (!options.max) options.max = 3;
     else if (!options.validation) {

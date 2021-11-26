@@ -3,6 +3,7 @@ import {
   MediaType,
   getMediaKeys,
 } from '@slonbook/baileys-md';
+import prettyMs from 'pretty-ms';
 import {CommandInfo} from '../types';
 import {createDecipheriv} from 'crypto';
 import {Transform} from 'node:stream';
@@ -15,9 +16,9 @@ export class Util {
   /**
      * Use this method if you want post a text to the hastebin site.
      * @param {string} text - A text want to post.
-     * @return {string}
+     * @return {Promise<string>}
      */
-  static async postToHastebin(text: string) {
+  static async postToHastebin(text: string): Promise<string> {
     const response = await got.post(
         'https://www.toptal.com/developers/hastebin/documents', {
           'body': text,
@@ -33,6 +34,21 @@ export class Util {
    */
   static makeCommandConfig(data: CommandInfo): CommandInfo {
     return data;
+  }
+
+  /**
+   * Parse a duration in miliseconds to human readable.
+   * 
+   * @param {number} ms
+   * @param {prettyMs.Options} options
+   * @return {string}
+   */
+  static parseDuration(ms: number, options?: prettyMs.Options): string {
+    return prettyMs(ms, {
+        colonNotation: true,
+        secondsDecimalDigits: 0,
+        ...options,
+    });
   }
 
   /**
