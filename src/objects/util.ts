@@ -1,17 +1,12 @@
 import got from 'got';
 import {
-  AuthenticationState, BufferJSON,
-  initInMemoryKeyStore,
   MediaType,
   getMediaKeys,
 } from '@slonbook/baileys-md';
-import {resolve as resolvePath} from 'node:path';
-import {readFileSync, writeFileSync} from 'node:fs';
 import {CommandInfo} from '../types';
 import {createDecipheriv} from 'crypto';
 import {Transform} from 'node:stream';
 
-const authPath = resolvePath(__dirname, '..', '..', 'auth.json');
 /**
  * @class Util
  */
@@ -31,31 +26,6 @@ export class Util {
      JSON.parse(response.body).key;
   }
 
-  /**
-   * Use this method if you want get the authentication state.
-   * @return {AuthenticationState}
-   */
-  static loadAuthState() {
-    let state: AuthenticationState | undefined;
-    try {
-      const st = JSON.parse(readFileSync(authPath, 'utf-8'),
-          BufferJSON.reviver);
-      state = {
-        'creds': st.creds,
-        'keys': initInMemoryKeyStore(st.keys),
-      };
-    } catch {};
-    return state;
-  }
-
-  /**
-   * Use this method if you want save a auth state.
-   * @param {AuthenticationState} st - Baileys AS
-   * @return {void}
-   */
-  static saveAuthState(st: AuthenticationState): void {
-    writeFileSync(authPath, JSON.stringify(st, BufferJSON.replacer, 2));
-  }
 
   /**
    * @param {CommandInfo} data - Command data

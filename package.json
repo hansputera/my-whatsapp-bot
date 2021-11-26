@@ -6,7 +6,7 @@
   "author": "Hanif",
   "license": "MIT",
   "dependencies": {
-    "@slonbook/baileys-md": "^4.0.0",
+    "@slonbook/baileys-md": "^4.0.4",
     "dotenv": "^10.0.0",
     "got": "^11.8.3",
     "ioredis": "^4.28.0",
