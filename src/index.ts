@@ -8,16 +8,16 @@ import {Client} from './objects';
 import * as qr from 'qrcode';
 import {EventHandler} from './events';
 import {
-    useSingleFileAuthState,
-    DisconnectReason
+  useSingleFileAuthState,
+  DisconnectReason,
 } from '@slonbook/baileys-md';
 
 /**
  * Init baileys connection
- * 
+ *
  * @return {void}
  */
-function initSock() {
+function initSock(): void {
   const {state, saveState} = useSingleFileAuthState(
       resolvePath(__dirname, '..', 'auth.json'),
   );
