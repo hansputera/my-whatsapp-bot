@@ -4,13 +4,13 @@ import {resolve as resolvePath} from 'node:path';
 import {unlinkSync, existsSync} from 'node:fs';
 import type {Boom} from '@hapi/boom';
 
-import {Client} from './objects';
 import * as qr from 'qrcode';
 import {EventHandler} from './events';
 import {
   useSingleFileAuthState,
   DisconnectReason,
 } from '@slonbook/baileys-md';
+import {AdapterClient} from './objects/adapter.client';
 
 /**
  * Init baileys connection
@@ -22,7 +22,7 @@ function initSock(): void {
       resolvePath(__dirname, '..', 'auth.json'),
   );
 
-  const client = new Client({
+  const client = new AdapterClient({
     'auth': state,
   });
 
@@ -53,6 +53,12 @@ function initSock(): void {
 
   client.baileys.ev.on('messages.upsert',
       eventsHandler.messageUpsert.bind(eventsHandler));
+
+  client.baileys.ev.on('groups.upsert',
+      eventsHandler.groupUpsert.bind(eventsHandler));
+
+  client.baileys.ev.on('groups.update',
+      eventsHandler.groupUpdate.bind(eventsHandler));
 
   // start the module
   client.modules.loads();

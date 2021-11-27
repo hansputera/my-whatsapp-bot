@@ -1,6 +1,6 @@
 import {readdirSync, existsSync, readFileSync} from 'node:fs';
 import * as path from 'node:path';
-import {ModuleInfo, CommandInfo} from '../types';
+import {ModuleInfo, CommandInfo, EventInfo} from '../types';
 import {createLogger} from './logger';
 
 /**
@@ -9,12 +9,15 @@ import {createLogger} from './logger';
 export class Modules {
   public commands: Map<string, CommandInfo> = new Map();
   public mods: Map<string, ModuleInfo> = new Map();
+  public events: Map<string, EventInfo> = new Map();
+
   public logger = createLogger('modules');
 
   /**
      * @param {string} commandsPath
+     * @param {string} eventsPath
      */
-  constructor(private commandsPath: string) {}
+  constructor(private commandsPath: string, private eventsPath: string) {}
 
   /**
      * Free the maps
@@ -23,6 +26,7 @@ export class Modules {
   free(): void {
     this.commands.clear();
     this.mods.clear();
+    this.events.clear();
   }
 
   /**
@@ -68,4 +72,5 @@ export class Modules {
         modConfig.commands.length + ' commands');
     }
   }
+
 }
