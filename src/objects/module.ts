@@ -93,9 +93,7 @@ export class Modules {
           () => this.logger.warn(eventFl.name + ' listener removed'));
 
       this.client.baileys.ev.on(
-          eventFl.name, (arg) => eventFl.target(
-              this.client, arg,
-          ),
+          eventFl.name, (arg) => eventFl.target(this.client, arg),
       );
 
       this.logger.info(eventFl.name + ' listener loaded');

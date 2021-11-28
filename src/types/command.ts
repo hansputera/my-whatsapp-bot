@@ -29,6 +29,6 @@ export interface CollectorOptions {
 export interface EventInfo {
     name: keyof BaileysEventMap;
     target:
-        (client: Client, arg: BaileysEventMap[EventInfo['name']])
+        (client: Client, args: any)
             => Promise<void> | void;
 }

@@ -4,7 +4,7 @@ import {
   getMediaKeys,
 } from '@slonbook/baileys-md';
 import prettyMs from 'pretty-ms';
-import {CommandInfo} from '../types';
+import {CommandInfo, EventInfo} from '../types';
 import {createDecipheriv} from 'crypto';
 import {Transform} from 'node:stream';
 
@@ -33,6 +33,14 @@ export class Util {
    * @return {CommandInfo}
    */
   static makeCommandConfig(data: CommandInfo): CommandInfo {
+    return data;
+  }
+
+  /**
+   * @param {CommandInfo} data - Event data
+   * @return {EventInfo}
+   */
+  static makeEventConfig(data: EventInfo): EventInfo {
     return data;
   }
 
