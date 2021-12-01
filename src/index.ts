@@ -25,6 +25,8 @@ function initSock(): void {
     'auth': state,
   });
 
+  client.baileys.ev.setMaxListeners(30);
+
   client.baileys.ev.on('connection.update', (conn) => {
     if (conn.qr) {
       client.logger.info('QR Generated');
@@ -34,6 +36,9 @@ function initSock(): void {
             DisconnectReason.loggedOut) {
         client.logger.info('Trying to reconnect');
         client.modules.free();
+        for (const listener of client.modules.listens) {
+          client.baileys.ev.removeAllListeners(listener);
+        }
         initSock();
       }
       if (existsSync(resolvePath(__dirname, '..', 'qr.png'))) {
@@ -51,4 +56,5 @@ function initSock(): void {
   client.modules.loadEvents();
 }
 
+process.setMaxListeners(20);
 initSock();

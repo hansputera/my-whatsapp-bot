@@ -105,4 +105,20 @@ export class Util {
 
     return responseMedia.pipe(pipeHandler, {end: true});
   }
+
+  /**
+   * @param {string} text
+   * @return {string}
+   */
+  static mockText(text: string): string {
+    const letters: string[] =
+        text.split('');
+
+    for (let i = 0; i < letters.length; i += Math.floor(Math.random() * 4)) {
+      letters[i] = letters[i].toUpperCase();
+    }
+
+
+    return letters.join('');
+  }
 }

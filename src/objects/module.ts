@@ -3,6 +3,7 @@ import * as path from 'node:path';
 import {ModuleInfo, CommandInfo, EventInfo} from '../types';
 import {createLogger} from './logger';
 import {Client} from './client';
+import {BaileysEventMap} from '@slonbook/baileys-md';
 
 /**
  * @class Modules
@@ -10,6 +11,7 @@ import {Client} from './client';
 export class Modules {
   public commands: Map<string, CommandInfo> = new Map();
   public mods: Map<string, ModuleInfo> = new Map();
+  public listens: (keyof BaileysEventMap)[] = [];
 
   public logger = createLogger('modules');
 
@@ -96,6 +98,9 @@ export class Modules {
           eventFl.name, (arg) => eventFl.target(this.client, arg),
       );
 
+      if (!this.listens.includes(eventFl.name)) {
+        this.listens.push(eventFl.name);
+      }
       this.logger.info(eventFl.name + ' listener loaded');
     }
   }
