@@ -121,4 +121,18 @@ export class Util {
 
     return letters.join('');
   }
+
+  /**
+   * @param {unknown[]} array 
+   * @param {number?} length 
+   * @return {T[]}
+   */
+  static trimArray<T>(array: T[], length: number = 10): T[] {
+      const temp = array.slice(0, array.length - length);
+      temp.push((
+          '...' +
+            (array.length - length).toString() +
+                ' more') as unknown as T);
+     return temp;
+  }
 }
