@@ -56,7 +56,8 @@ export const YouTubeDownloader: CommandFunc = async (
         searchResults.map((s, i) => `${i+1}. ${s.title}`).join('\n'));
     const collector = ctx.getCollector({
       max: 1,
-      validation: (ctxC) => ctxC.authorNumber === ctx.authorNumber,
+      validation: (ctxC) => ctxC.currentJid() ===
+        ctx.currentJid() && ctxC.authorNumber === ctx.authorNumber,
     });
 
     collector.start();

@@ -25,8 +25,6 @@ function initSock(): void {
     'auth': state,
   });
 
-  client.baileys.ev.setMaxListeners(30);
-
   client.baileys.ev.on('connection.update', (conn) => {
     if (conn.qr) {
       client.logger.info('QR Generated');

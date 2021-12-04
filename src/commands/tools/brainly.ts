@@ -1,5 +1,4 @@
-import Brainly from 'brainly-scraper-v2';
-import type {Question, Answer} from 'brainly-scraper-v2/src/types';
+import {Brainly, Question, Answer} from 'brainly-scraper-v2';
 import type {CommandFunc} from '../../types';
 import type {Context} from '../../extends/context';
 import {Util} from '../../objects';
@@ -15,7 +14,7 @@ const brainlyCommand: CommandFunc = async (
       return;
     }
 
-    const brainly = new Brainly('es');
+    const brainly = new Brainly('id');
 
     const redisResult = await redis.get(
         'br-' + encodeURIComponent(
@@ -49,6 +48,8 @@ const brainlyCommand: CommandFunc = async (
           vctx.text,
       ) != NaN,
     });
+    collector.start();
+
     await collector.wait();
 
     await LCtx.delete();
@@ -69,12 +70,13 @@ const brainlyCommand: CommandFunc = async (
       return;
     }
 
+    const qMsg = await ctx.reply(`Question: ${qSelected.question.content}\n\nBy: ${qSelected.question.author ? qSelected.question.author.username || qSelected.question.author.id : 'unknown.'}\nPoint (Q/A): ${qSelected.question.points_question}/${qSelected.question.points_answer.normal}`);
     qSelected.answers.forEach(async (answer) => {
       const img = answer.attachments[0];
       const t = `${answer.content}\n\nBy: ${answer.author ? answer.author.username || answer.author.id : 'unknown.'}\nThanks/Rate Count: ${answer.thanksCount}/${answer.ratesCount}\nIs best answer? ${answer.isBest ? 'Yes' : 'Nope.'}`;
       if (img) {
-        await ctx.replyWithPhoto(img, t);
-      } else await ctx.reply(t);
+        await qMsg.replyWithPhoto(img, t);
+      } else await qMsg.reply(t);
     });
   } catch (e) {
     await ctx.reply('Something was wrong, try again p'+
