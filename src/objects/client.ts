@@ -19,8 +19,10 @@ export class Client {
     ...this._options,
     logger: this.logger,
   });
-  public modules = new Modules(path.resolve(
+  public modules = new Modules(this, path.resolve(
       __dirname, '..', 'commands',
+  ), path.resolve(
+      __dirname, '..', 'listeners',
   ));
   public startTime = Date.now();
   public collectors: Map<string, MessageCollector> = new Map();

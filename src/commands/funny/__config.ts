@@ -1,6 +1,6 @@
 import type {ModuleInfo} from '../../types';
 
 export default {
-  'name': 'General',
+  'name': 'Funny',
   'hide': false,
 } as ModuleInfo;

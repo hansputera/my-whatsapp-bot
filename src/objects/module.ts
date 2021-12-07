@@ -1,7 +1,9 @@
 import {readdirSync, existsSync, readFileSync} from 'node:fs';
 import * as path from 'node:path';
-import {ModuleInfo, CommandInfo} from '../types';
+import {ModuleInfo, CommandInfo, EventInfo} from '../types';
 import {createLogger} from './logger';
+import {Client} from './client';
+import {BaileysEventMap} from '@slonbook/baileys-md';
 
 /**
  * @class Modules
@@ -9,12 +11,16 @@ import {createLogger} from './logger';
 export class Modules {
   public commands: Map<string, CommandInfo> = new Map();
   public mods: Map<string, ModuleInfo> = new Map();
+  public listens: (keyof BaileysEventMap)[] = [];
+
   public logger = createLogger('modules');
 
   /**
      * @param {string} commandsPath
+     * @param {string} eventsPath
      */
-  constructor(private commandsPath: string) {}
+  constructor(public client: Client, private commandsPath: string,
+        private eventsPath: string) {}
 
   /**
      * Free the maps
@@ -66,6 +72,36 @@ export class Modules {
       this.mods.set(modConfig.name, modConfig);
       this.logger.info(modFolder + ' loaded correctly with ' +
         modConfig.commands.length + ' commands');
+    }
+  }
+
+  /**
+   * Load events
+   *
+   * @return {void}
+   */
+  loadEvents(): void {
+    if (!existsSync(this.eventsPath)) {
+      throw new TypeError('Are you sure enter correctly events path?');
+    }
+    for (const eventFile of readdirSync(this.eventsPath).filter(
+        (fl) => fl.endsWith('.js'))) {
+      this.logger.info('Load event file: ' + eventFile);
+      const eventFl: EventInfo = require(
+          path.resolve(this.eventsPath, eventFile),
+      ).default;
+
+      this.client.baileys.ev.removeListener(eventFl.name,
+          () => this.logger.warn(eventFl.name + ' listener removed'));
+
+      this.client.baileys.ev.on(
+          eventFl.name, (arg) => eventFl.target(this.client, arg),
+      );
+
+      if (!this.listens.includes(eventFl.name)) {
+        this.listens.push(eventFl.name);
+      }
+      this.logger.info(eventFl.name + ' listener loaded');
     }
   }
 }

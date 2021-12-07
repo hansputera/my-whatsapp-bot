@@ -4,13 +4,12 @@ import {resolve as resolvePath} from 'node:path';
 import {unlinkSync, existsSync} from 'node:fs';
 import type {Boom} from '@hapi/boom';
 
-import {Client} from './objects';
 import * as qr from 'qrcode';
-import {EventHandler} from './events';
 import {
   useSingleFileAuthState,
   DisconnectReason,
 } from '@slonbook/baileys-md';
+import {Client} from './objects';
 
 /**
  * Init baileys connection
@@ -26,12 +25,7 @@ function initSock(): void {
     'auth': state,
   });
 
-  const eventsHandler = new EventHandler(client);
-
   client.baileys.ev.on('connection.update', (conn) => {
-    if (conn.isNewLogin) {
-      client.logger.info('New Login detected');
-    }
     if (conn.qr) {
       client.logger.info('QR Generated');
       qr.toFile(resolvePath(__dirname, '..', 'qr.png'), conn.qr);
@@ -39,9 +33,10 @@ function initSock(): void {
       if ((conn.lastDisconnect?.error as Boom).output.statusCode !==
             DisconnectReason.loggedOut) {
         client.logger.info('Trying to reconnect');
-        client.logger.warn('Clearing modules');
         client.modules.free();
-        client.logger.warn('Modules cleared, reconnecting...');
+        for (const listener of client.modules.listens) {
+          client.baileys.ev.removeAllListeners(listener);
+        }
         initSock();
       }
       if (existsSync(resolvePath(__dirname, '..', 'qr.png'))) {
@@ -52,19 +47,12 @@ function initSock(): void {
     }
   });
 
-  client.baileys.ev.on('creds.update', () => {
-    client.logger.info('Authentication credentials has updated');
-
-    saveState();
-  });
-
-  /** Main events */
-
-  client.baileys.ev.on('messages.upsert',
-      eventsHandler.messageUpsert.bind(eventsHandler));
+  client.baileys.ev.on('creds.update', saveState);
 
   // start the module
   client.modules.loads();
+  client.modules.loadEvents();
 }
 
+process.setMaxListeners(20);
 initSock();

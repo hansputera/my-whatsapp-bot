@@ -2,7 +2,7 @@
 
 Hello there, welcome to my personal whatsapp bot project. I use the [Baileys Multi-Device](https://github.com/adiwajshing/baileys) module where it uses websocket.
 
-But, in this project. I'm using an unofficial module (maybe), [@slonbook/baileys](https://npmjs.com/@slonbook/baileys) (Compiled Baileys Multi-Device code)
+But, in this project. I'm using an unofficial module (maybe), [@slonbook/baileys-md](https://npmjs.com/@slonbook/baileys-md) (Compiled Baileys Multi-Device code)
 
 ## Features
 
@@ -23,7 +23,7 @@ But, in this project. I'm using an unofficial module (maybe), [@slonbook/baileys
 > Download a tiktok video from a TikTok Video URL.
 
 ## Installation & Configuration
-- You need to install NodeJS Latest (>=16.x)
+- You need to install NodeJS Latest Version (>=16.x)
 - Clone this repository.
 - Install dependencies using `yarn` or `npm` (`yarn/npm install`)
 - Change `.env.schema` to `.env`, and fill `REDIS` with your redis server url.
