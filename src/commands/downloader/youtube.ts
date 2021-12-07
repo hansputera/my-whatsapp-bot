@@ -100,7 +100,6 @@ export const YouTubeDownloader: CommandFunc = async (
   }
 
   await ctx.reply(info.text);
-
   let buffs = Buffer.alloc(0);
   const stream = ytdl(info.url, {
     'filter': mediaFlag ?

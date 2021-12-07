@@ -14,7 +14,7 @@ const brainlyCommand: CommandFunc = async (
       return;
     }
 
-    const brainly = new Brainly('id');
+    const brainly = new Brainly();
 
     const redisResult = await redis.get(
         'br-' + encodeURIComponent(
@@ -26,7 +26,7 @@ const brainlyCommand: CommandFunc = async (
             question: Question;
             answers: Answer[];
         }[] :
-                await brainly.search('id', question);
+                await brainly.searchWithMT('id', question);
 
     await redis.set('br-' +
             encodeURIComponent(question.toLowerCase()), JSON.stringify(qs));
@@ -39,7 +39,7 @@ const brainlyCommand: CommandFunc = async (
 
     const LCtx = await ctx.reply('Please type number bellow [1-' +
             qs.length + ']\n\n' +
-                qs.map((q, i) => i+1 + '. ' + q.question.content));
+                qs.map((q, i) => i+1 + '. ' + q.question.content).join('\n'));
     const collector = ctx.getCollector({
       'max': 1,
       'time': 30 * 1000,
