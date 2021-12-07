@@ -9,7 +9,7 @@ const messageUpsertHandle = async (
     arg: BaileysEventMap['messages.upsert'],
 ) => {
   if (arg.messages.length) {
-    const ctx = new Context(client, arg.messages[0]);
+    const ctx = new Context(client, arg.messages[0], true);
     if (ctx.timestamp < ctx.client.startTime) {
       ctx.client.logger.info(ctx.id +
                 ' message was blocked');

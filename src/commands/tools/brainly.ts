@@ -39,7 +39,11 @@ const brainlyCommand: CommandFunc = async (
 
     const LCtx = await ctx.reply('Please type number bellow [1-' +
             qs.length + ']\n\n' +
-                qs.map((q, i) => i+1 + '. ' + q.question.content).join('\n'));
+                qs.map((q, i) => i+1 + '. ' + (q.question.content.trim()
+                    .length > 100 ? q.question.content.trim()
+                        .substr(0, 101) + '...' : q.question.content
+                            .trim()),
+                ).join('\n'));
     const collector = ctx.getCollector({
       'max': 1,
       'time': 30 * 1000,
