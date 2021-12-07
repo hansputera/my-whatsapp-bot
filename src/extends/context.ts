@@ -1,5 +1,5 @@
 import {Client} from '../objects';
-import {proto, AnyMessageContent} from '@slonbook/baileys-md';
+import {proto, AnyMessageContent, GroupParticipant} from '@slonbook/baileys-md';
 import Long from 'long';
 import {prefixes} from '../config';
 import {MessageCollector} from './collector';
@@ -179,6 +179,22 @@ export class Context {
    */
   public getCollector(options?: CollectorOptions): MessageCollector {
     return new MessageCollector(this, options);
+  }
+
+  /**
+   * Get GroupParticipant class.
+   *
+   * @return {GroupParticipant | undefined}
+   */
+  public get participant(): GroupParticipant | undefined {
+    if (!this.isGroup) return undefined;
+    else if (this.isGroup && !this.client.groupsCache.has(
+          this.msg.key.remoteJid as string,
+    )) return undefined;
+
+    return this.client.groupsCache.get(
+        this.msg.key.remoteJid as string,
+    )?.members.find((m) => m.id === this.authorNumber);
   }
 
   /**
