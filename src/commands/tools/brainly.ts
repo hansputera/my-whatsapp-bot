@@ -56,7 +56,7 @@ const brainlyCommand: CommandFunc = async (
       return;
     }
 
-    await LCtx.delete();
+    await LCtx?.delete();
 
     if (!collector.contexts.length) {
       await ctx.reply('Time is up, try again!');
@@ -80,8 +80,8 @@ const brainlyCommand: CommandFunc = async (
       const img = answer.attachments[0];
       const t = `${answer.content}\n\nBy: ${answer.author ? answer.author.username || answer.author.id : 'unknown.'}\nThanks/Rate Count: ${answer.thanksCount}/${answer.ratesCount}\nIs best answer? ${answer.isBest ? 'Yes' : 'Nope.'}`;
       if (img) {
-        await qMsg.replyWithPhoto(img, t);
-      } else await qMsg.reply(t);
+        await qMsg?.replyWithPhoto(img, t);
+      } else await qMsg?.reply(t);
     });
   } catch (e) {
     await ctx.reply('Something was wrong, try again p'+

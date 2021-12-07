@@ -16,10 +16,14 @@ export class Context {
   /**
      * @param {Client} client
      * @param {proto.IWebMessageInfo} msg
+     * @param {boolean} groupSync
      */
-  constructor(public client: Client, public msg: proto.IWebMessageInfo) {
+  constructor(
+      public client: Client,
+      public msg: proto.IWebMessageInfo,
+      groupSync?: boolean) {
     this.reloadQuery();
-    this.syncGroup();
+    if (groupSync) this.syncGroup();
   }
 
   public args: string[] = [];
@@ -295,14 +299,19 @@ export class Context {
      * @param {AnyMessageContent} anotherOptions - Send message options
      */
   public async reply(text: string, anotherOptions?: AnyMessageContent) {
-    return new Context(this.client, await this.client.baileys.sendMessage(
-            this.msg.key.remoteJid as string, {
-              'text': text,
-              ...anotherOptions,
-            }, {
-              quoted: this.msg,
-            },
-    ));
+    try {
+      return new Context(this.client, await this.client.baileys.sendMessage(
+                this.msg.key.remoteJid as string, {
+                  'text': text,
+                  ...anotherOptions,
+                }, {
+                  quoted: this.msg,
+                },
+      ));
+    } catch (e) {
+      this.logger.error('Error to send a message: ' + text, e);
+      return undefined;
+    }
   }
 
   /**
@@ -313,7 +322,8 @@ export class Context {
    */
   public async replyWithAudio(audio: Buffer | string,
       isVN: boolean = false, anotherOptions?: AnyMessageContent) {
-    return new Context(this.client, await this.client.baileys.sendMessage(
+    try {
+      return new Context(this.client, await this.client.baileys.sendMessage(
           this.msg.key.remoteJid as string, {
             'audio': typeof audio === 'string' ?
                 {
@@ -324,7 +334,11 @@ export class Context {
           }, {
             'quoted': this.msg,
           },
-    ));
+      ));
+    } catch (e) {
+      this.logger.error('Error want to send a message: AUDIO', e);
+      return undefined;
+    }
   }
 
   /**
@@ -343,17 +357,22 @@ export class Context {
       (anotherOptions as Record<string, unknown>)['caption'] =
         caption;
     }
-    return new Context(this.client, await this.client.baileys.sendMessage(
-          this.msg.key.remoteJid as string, {
-            'video': typeof video === 'string' ?
-                {
-                  'url': video,
-                } : video,
-            ...anotherOptions,
-          }, {
-            'quoted': this.msg,
-          },
-    ));
+    try {
+      return new Context(this.client, await this.client.baileys.sendMessage(
+            this.msg.key.remoteJid as string, {
+              'video': typeof video === 'string' ?
+                    {
+                      'url': video,
+                    } : video,
+              ...anotherOptions,
+            }, {
+              'quoted': this.msg,
+            },
+      ));
+    } catch (e) {
+      this.logger.error('Error want to send a message: VIDEO', e);
+      return undefined;
+    }
   }
 
   /**
@@ -363,12 +382,17 @@ export class Context {
    * @param {AnyMessageContent} anotherOptions - Send message options
    */
   public async send(text: string, anotherOptions?: AnyMessageContent) {
-    return new Context(this.client, await this.client.baileys.sendMessage(
-          this.msg.key.remoteJid as string, {
-            'text': text,
-            ...anotherOptions,
-          },
-    ));
+    try {
+      return new Context(this.client, await this.client.baileys.sendMessage(
+            this.msg.key.remoteJid as string, {
+              'text': text,
+              ...anotherOptions,
+            },
+      ));
+    } catch (e) {
+      this.logger.error('Error want to send a message: NORMAL TEXT', e);
+      return undefined;
+    }
   }
 
   /**
@@ -385,16 +409,21 @@ export class Context {
       (anotherOptions as Record<string, unknown>)['caption'] =
           caption;
     }
-    return new Context(this.client, await this.client.baileys.sendMessage(
-          this.msg.key.remoteJid as string, {
-            'image': typeof photo === 'string' ?
-                {'url': photo} : photo,
-            'mimetype': 'image/png',
-            ...anotherOptions,
-          }, {
-            'quoted': this.msg,
-          },
-    ));
+    try {
+      return new Context(this.client, await this.client.baileys.sendMessage(
+            this.msg.key.remoteJid as string, {
+              'image': typeof photo === 'string' ?
+                    {'url': photo} : photo,
+              'mimetype': 'image/png',
+              ...anotherOptions,
+            }, {
+              'quoted': this.msg,
+            },
+      ));
+    } catch (e) {
+      this.logger.error('Error want to send a message: PHOTO', e);
+      return undefined;
+    }
   }
 
   /**
@@ -403,7 +432,8 @@ export class Context {
    * @param {Buffer | string} sticker
    */
   public async replyWithSticker(sticker: Buffer | string) {
-    return new Context(this.client, await this.client.baileys.sendMessage(
+    try {
+      return new Context(this.client, await this.client.baileys.sendMessage(
           this.msg.key.remoteJid as string, {
             'sticker': typeof sticker === 'string' ?
                 {
@@ -412,18 +442,27 @@ export class Context {
           }, {
             'quoted': this.msg,
           },
-    ));
+      ));
+    } catch (e) {
+      this.logger.error('Error want to send a message: STICKER', e);
+      return undefined;
+    }
   }
 
   /**
    * Delete this message
    */
   public async delete() {
-    return await this.client.baileys.sendMessage(
+    try {
+      return await this.client.baileys.sendMessage(
           this.msg.key.remoteJid as string, {
             'delete': this.msg.key,
           },
-    );
+      );
+    } catch (e) {
+      this.logger.error('Error want to delete a message: ', e);
+      return undefined;
+    }
   }
 
   /**

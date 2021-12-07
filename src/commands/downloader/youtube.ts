@@ -65,7 +65,7 @@ export const YouTubeDownloader: CommandFunc = async (
 
     if (!collector.contexts.length && ctx.isGroup && !ctx.getGroup()) return;
 
-    await contextSelect.delete();
+    await contextSelect?.delete();
     const num = collector.contexts[0].text;
     if (isNaN(num as unknown as number)) {
       await ctx.reply('Invalid option!');

@@ -32,7 +32,7 @@ const mockCommand: CommandFunc = async (
         },
     );
 
-    await loadingText.delete();
+    await loadingText?.delete();
 
     const json = JSON.parse(anImage.body);
 
