@@ -1,4 +1,4 @@
-import {Brainly, Question, Answer} from 'brainly-scraper-v2';
+import {Brainly, Question, Answer, CountryList} from 'brainly-scraper-v2';
 import type {CommandFunc} from '../../types';
 import type {Context} from '../../extends/context';
 import {Util} from '../../objects';
@@ -14,6 +14,25 @@ const brainlyCommand: CommandFunc = async (
       return;
     }
 
+    let langF = ctx.flags
+        .find((f) => ['lang', 'language', 'bahasa']
+            .includes(f.split('=')[0].toLowerCase()) && f.split('=')[1]);
+    if (langF &&
+            Brainly.isValidLanguage(
+                langF.split('=')[1].toLowerCase() as CountryList)) {
+      langF = langF.split('=')[1]
+          .toLowerCase() as CountryList;
+      await ctx.reply('If the answer options is different ' +
+                        'from requested language, it means the ' +
+                            'answer was saved/cached in my' +
+                            ' brain.\n' +
+                            'Why? We want increase the brainly searching' +
+                                ' speed and avoid ' +
+                                    'getting blocked from brainly site.');
+    } else {
+      langF = 'id' as CountryList;
+    }
+
     const brainly = new Brainly();
 
     const redisResult = await redis.get(
@@ -26,7 +45,7 @@ const brainlyCommand: CommandFunc = async (
             question: Question;
             answers: Answer[];
         }[] :
-                await brainly.searchWithMT('id', question);
+                await brainly.searchWithMT(langF as CountryList, question);
 
     await redis.set('br-' +
             encodeURIComponent(question.toLowerCase()), JSON.stringify(qs));
