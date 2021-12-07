@@ -52,8 +52,12 @@ const brainlyCommand: CommandFunc = async (
 
     await collector.wait();
 
+    if (!collector.contexts.length && ctx.isGroup && !ctx.getGroup()) {
+        return;
+    }
+
     await LCtx.delete();
-    if (!collector.contexts) {
+    if (!collector.contexts.length) {
       await ctx.reply('Time is up, try again!');
       return;
     }

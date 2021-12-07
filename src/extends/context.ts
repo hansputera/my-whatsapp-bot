@@ -6,6 +6,7 @@ import {MessageCollector} from './collector';
 import {CommandInfo, CollectorOptions} from '../types';
 import {createLogger} from '../objects';
 import {Sticker, Image, Video} from './messages';
+import { GroupContext } from './group';
 
 /**
  * @class Context
@@ -37,6 +38,17 @@ export class Context {
      */
   public get isFromMe(): boolean {
     return this.msg.key.fromMe as boolean;
+  }
+
+  /**
+   * Get group context data (if any)
+   * 
+   * @return {GroupContext | undefined}
+   */
+  public getGroup(): GroupContext | undefined {
+      return this.client.groupsCache.get(
+          this.currentJid() + '@g.us',
+      );
   }
 
   /**
@@ -149,8 +161,8 @@ export class Context {
      * @return {string}
      */
   public get authorNumber(): string | undefined {
-    return this.msg.participant ?
-            this.msg.participant.replace(
+    return this.msg.key.participant ?
+            this.msg.key.participant.replace(
                 /\@.+/gi, '',
             ) :
             (this.isFromMe ?
@@ -186,8 +198,8 @@ export class Context {
    * @return {boolean}
    */
   public get isGroup(): boolean {
-    return this.currentJid().split('-')
-        .length == 2;
+    return !((this.authorNumber as string)
+        === this.currentJid());
   }
 
   /**
