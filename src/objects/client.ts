@@ -3,8 +3,8 @@ import baileys, {SocketConfig} from '@slonbook/baileys-md';
 import {createLogger} from './logger';
 import {Modules} from './module';
 import {MessageCollector} from '../extends/collector';
-import { GroupContext } from '../extends/group';
-import { Readable } from 'stream';
+import {GroupContext} from '../extends/group';
+import {Readable} from 'stream';
 
 /**
  * @class Client

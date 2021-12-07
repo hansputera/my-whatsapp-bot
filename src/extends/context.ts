@@ -6,7 +6,7 @@ import {MessageCollector} from './collector';
 import {CommandInfo, CollectorOptions} from '../types';
 import {createLogger} from '../objects';
 import {Sticker, Image, Video} from './messages';
-import { GroupContext } from './group';
+import {GroupContext} from './group';
 
 /**
  * @class Context
@@ -19,6 +19,7 @@ export class Context {
      */
   constructor(public client: Client, public msg: proto.IWebMessageInfo) {
     this.reloadQuery();
+    this.syncGroup();
   }
 
   public args: string[] = [];
@@ -42,13 +43,13 @@ export class Context {
 
   /**
    * Get group context data (if any)
-   * 
+   *
    * @return {GroupContext | undefined}
    */
   public getGroup(): GroupContext | undefined {
-      return this.client.groupsCache.get(
-          this.currentJid() + '@g.us',
-      );
+    return this.client.groupsCache.get(
+        this.currentJid() + '@g.us',
+    );
   }
 
   /**
@@ -198,8 +199,8 @@ export class Context {
    * @return {boolean}
    */
   public get isGroup(): boolean {
-    return !((this.authorNumber as string)
-        === this.currentJid());
+    return !((this.authorNumber as string) ===
+        this.currentJid());
   }
 
   /**
@@ -407,6 +408,27 @@ export class Context {
             'delete': this.msg.key,
           },
     );
+  }
+
+  /**
+   * If the chat is in a group, add it to cache.
+   *
+   * @return {Promise<boolean>}
+   */
+  public async syncGroup(): Promise<boolean> {
+    if (!this.isGroup ||
+            this.client.groupsCache.has(
+                this.msg.key.remoteJid as string,
+            )) return false;
+
+    const groupMeta = await this
+        .client.baileys.groupMetadata(
+            this.msg.key.remoteJid as string,
+        );
+
+    this.client.groupsCache.set(this.msg.key.remoteJid as string,
+        new GroupContext(this.client, groupMeta));
+    return true;
   }
 }
 
