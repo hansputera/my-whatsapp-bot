@@ -101,6 +101,6 @@ export class GroupContext {
     return new Context(this.client,
         await this.client.baileys.sendMessage(
             this.jid, content,
-        ), false);
+        ), false); // avoid internal error.
   }
 }
