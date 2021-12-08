@@ -8,7 +8,6 @@
   "dependencies": {
     "@slonbook/baileys-md": "^4.0.4",
     "brainly-scraper-v2": "^2.0.9",
-    "canvas": "^2.8.0",
     "dotenv": "^10.0.0",
     "got": "^11.8.3",
     "ioredis": "^4.28.0",
