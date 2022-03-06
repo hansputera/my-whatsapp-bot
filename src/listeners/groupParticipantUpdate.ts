@@ -1,5 +1,5 @@
 import {Client, Util} from '../objects';
-import {BaileysEventMap} from 'hanif-baileys-md';
+import {BaileysEventMap} from '@adiwajshing/baileys';
 
 const groupParticipantUpdateHandle = async (
     client: Client,

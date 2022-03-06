@@ -6,6 +6,7 @@
   "author": "Hanif",
   "license": "MIT",
   "dependencies": {
+    "@adiwajshing/baileys": "^4.0.1",
     "brainly-scraper-v2": "^2.0.9",
     "dotenv": "^10.0.0",
     "got": "^11.8.3",

@@ -1,5 +1,5 @@
 import * as path from 'node:path';
-import baileys, {SocketConfig} from 'hanif-baileys-md';
+import baileys, {SocketConfig} from '@adiwajshing/baileys';
 import {createLogger} from './logger';
 import {Modules} from './module';
 import {MessageCollector} from '../extends/collector';

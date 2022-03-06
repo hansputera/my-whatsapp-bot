@@ -2,7 +2,7 @@ import got from 'got';
 import {
   MediaType,
   getMediaKeys,
-} from 'hanif-baileys-md';
+} from '@adiwajshing/baileys';
 import prettyMs from 'pretty-ms';
 import {CommandInfo, EventInfo} from '../types';
 import {createDecipheriv} from 'crypto';

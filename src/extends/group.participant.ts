@@ -1,5 +1,5 @@
 import {Client} from '../objects';
-import {GroupParticipant, AnyMessageContent} from 'hanif-baileys-md';
+import {GroupParticipant, AnyMessageContent} from '@adiwajshing/baileys';
 
 /**
  * @class GroupParticipantContext

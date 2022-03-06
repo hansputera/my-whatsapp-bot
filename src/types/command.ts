@@ -1,5 +1,5 @@
 import {Context} from '../extends/context';
-import type {BaileysEventMap} from 'hanif-baileys-md';
+import type {BaileysEventMap} from '@adiwajshing/baileys';
 import {Client} from '../objects';
 
 export type CommandFunc = (ctx: Context) => Promise<void>;

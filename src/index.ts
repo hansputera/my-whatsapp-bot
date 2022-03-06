@@ -8,7 +8,7 @@ import * as qr from 'qrcode';
 import {
   useSingleFileAuthState,
   DisconnectReason,
-} from 'hanif-baileys-md';
+} from '@adiwajshing/baileys';
 import {Client} from './objects';
 
 /**
@@ -53,6 +53,7 @@ function initSock(): void {
   client.modules.loads();
   client.modules.loadEvents();
 }
+
 
 process.setMaxListeners(20);
 initSock();

@@ -1,4 +1,4 @@
-import {proto} from 'hanif-baileys-md';
+import {proto} from '@adiwajshing/baileys';
 import {Util} from '../../objects';
 import {MessageMediaBase} from '.';
 

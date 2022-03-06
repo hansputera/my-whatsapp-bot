@@ -5,6 +5,28 @@ __metadata:
   version: 5
   cacheKey: 8
 
+"@adiwajshing/baileys@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@adiwajshing/baileys@npm:4.0.1"
+  dependencies:
+    "@hapi/boom": ^9.1.3
+    axios: ^0.24.0
+    curve25519-js: ^0.0.4
+    libsignal: "git+https://github.com/adiwajshing/libsignal-node.git"
+    music-metadata: ^7.4.1
+    node-cache: ^5.1.2
+    pino: ^7.0.0
+    protobufjs: ^6.10.1
+    ws: ^8.0.0
+  peerDependencies:
+    "@adiwajshing/keyed-db": ^0.2.4
+    jimp: ^0.16.1
+    qrcode-terminal: ^0.12.0
+    sharp: ^0.29.3
+  checksum: 059a1981f52b72f781c986390a260f7a90e3a56bcd769a426cd18581700a96f078ab44b9807461643dfb3b5f1bb1bd65118e725ccbc49b1fd2fdadd193b24f3c
+  languageName: node
+  linkType: hard
+
 "@assemblyscript/loader@npm:^0.10.1":
   version: 0.10.1
   resolution: "@assemblyscript/loader@npm:0.10.1"
@@ -3557,6 +3579,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "wakuu@workspace:."
   dependencies:
+    "@adiwajshing/baileys": ^4.0.1
     "@types/ioredis": ^4.28.1
     "@types/node": ^16.11.7
     "@types/qrcode": ^1.4.1
