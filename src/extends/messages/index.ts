@@ -1,4 +1,4 @@
-import {proto} from '@slonbook/baileys-md';
+import {proto} from 'hanif-baileys-md';
 import Long from 'long';
 
 /**

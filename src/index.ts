@@ -8,7 +8,7 @@ import * as qr from 'qrcode';
 import {
   useSingleFileAuthState,
   DisconnectReason,
-} from '@slonbook/baileys-md';
+} from 'hanif-baileys-md';
 import {Client} from './objects';
 
 /**

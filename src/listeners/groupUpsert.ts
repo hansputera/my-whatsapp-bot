@@ -1,5 +1,5 @@
 import {Client, Util} from '../objects';
-import {BaileysEventMap} from '@slonbook/baileys-md';
+import {BaileysEventMap} from 'hanif-baileys-md';
 import {GroupContext} from '../extends/group';
 
 const groupUpsertHandle = async (

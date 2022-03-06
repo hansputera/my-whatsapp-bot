@@ -1,5 +1,5 @@
 import {Client, Util} from '../objects';
-import type {BaileysEventMap} from '@slonbook/baileys-md';
+import type {BaileysEventMap} from 'hanif-baileys-md';
 import {Context} from '../extends/context';
 import {messageCollector, cooldownMiddleware} from '../middleware';
 import {devs} from '../config';

@@ -1,4 +1,4 @@
-import {GroupMetadata, AnyMessageContent} from '@slonbook/baileys-md';
+import {GroupMetadata, AnyMessageContent} from 'hanif-baileys-md';
 import {Client} from '../objects';
 import {GroupParticipantContext} from './group.participant';
 import {Context} from './context';

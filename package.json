@@ -6,10 +6,10 @@
   "author": "Hanif",
   "license": "MIT",
   "dependencies": {
-    "@slonbook/baileys-md": "^4.0.4",
     "brainly-scraper-v2": "^2.0.9",
     "dotenv": "^10.0.0",
     "got": "^11.8.3",
+    "hanif-baileys-md": "^4.0.0",
     "ioredis": "^4.28.0",
     "pino": "^7.2.0",
     "pino-pretty": "^7.2.0",

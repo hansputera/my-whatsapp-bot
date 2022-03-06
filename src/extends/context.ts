@@ -1,5 +1,5 @@
 import {Client} from '../objects';
-import {proto, AnyMessageContent, GroupParticipant} from '@slonbook/baileys-md';
+import {proto, AnyMessageContent, GroupParticipant} from 'hanif-baileys-md';
 import Long from 'long';
 import {prefixes} from '../config';
 import {MessageCollector} from './collector';

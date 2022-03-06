@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import {ModuleInfo, CommandInfo, EventInfo} from '../types';
 import {createLogger} from './logger';
 import {Client} from './client';
-import {BaileysEventMap} from '@slonbook/baileys-md';
+import {BaileysEventMap} from 'hanif-baileys-md';
 
 /**
  * @class Modules
