@@ -4,11 +4,36 @@ import {Util} from '../../objects';
 import {redis} from '../../db/redis';
 
 interface TikTokResponse {
-    result: {
+  error?: string;
+    video?: {
+        id?: string;
         thumb?: string;
-        advanced?: Record<string, unknown>;
         urls: string[];
+        title?: string;
+        duration?: string;
     };
+    music?: {
+        url: string;
+        title?: string;
+        author?: string;
+        id?: string;
+        cover?: string;
+        album?: string;
+        duration?: number;
+    };
+    author?: {
+        username?: string;
+        thumb?: string;
+        id?: string;
+        nick?: string;
+    };
+    caption?: string;
+    playsCount?: number;
+    sharesCount?: number;
+    commentsCount?: number;
+    likesCount?: number;
+    uploadedAt?: string;
+    updatedAt?: string;
     provider: string;
 }
 
@@ -17,18 +42,15 @@ const sendTikTokFunc = async (
     data: TikTokResponse,
 ) => {
   const response = await Util.fetch(
-      data.result.urls[0], {
+      data.video?.urls[0] as string, {
         followRedirect: true,
       },
   );
-  let text = '';
+  const text = `*${data.video?.title ?? 'No title.'}* - *${data.video?.duration ?? '-'}*${
+    data.caption ? '\n\n' + data.caption : ''
+  }`;
 
-  if (data.provider === 'savefrom') {
-    text = '*' + data.result.advanced?.videoTitle + '* - *' +
-            data.result.advanced?.videoDuration + '*';
-  }
-
-  await ctx.replyWithVideo(response.rawBody, text.length ? text : '-');
+  await ctx.replyWithVideo(response.rawBody, text);
 };
 
 const tiktokDownloaderCommand: CommandFunc = async (

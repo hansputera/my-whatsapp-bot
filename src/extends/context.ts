@@ -289,7 +289,7 @@ export class Context {
   public get timestamp(): number {
     if (this.msg.messageTimestamp instanceof Long) {
       return this.msg.messageTimestamp.toInt() * 1000;
-    } else return this.msg.messageTimestamp as number;
+    } else return (this.msg.messageTimestamp as number) * 1000;
   }
 
   /**
