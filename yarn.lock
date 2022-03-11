@@ -1409,13 +1409,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify-warning@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "fastify-warning@npm:0.2.0"
-  checksum: c19ebccf54a3122877d2248400772ca98bacbabdf97826211ede29246c640d47431a2eebed1f52f9421139ed5e52e42d3bd4aefc46e27b6f34add3507529fd97
-  languageName: node
-  linkType: hard
-
 "fastq@npm:^1.6.0":
   version: 1.13.0
   resolution: "fastq@npm:1.13.0"
@@ -1553,7 +1546,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-caller-file@npm:^2.0.1, get-caller-file@npm:^2.0.5":
+"get-caller-file@npm:^2.0.1":
   version: 2.0.5
   resolution: "get-caller-file@npm:2.0.5"
   checksum: b9769a836d2a98c3ee734a88ba712e62703f1df31b94b784762c433c27a386dd6029ff55c2a920c392e33657d80191edbf18c61487e198844844516f843496b9
@@ -1654,28 +1647,6 @@ __metadata:
   version: 4.2.9
   resolution: "graceful-fs@npm:4.2.9"
   checksum: 68ea4e07ff2c041ada184f9278b830375f8e0b75154e3f080af6b70f66172fabb4108d19b3863a96b53fc068a310b9b6493d86d1291acc5f3861eb4b79d26ad6
-  languageName: node
-  linkType: hard
-
-"hanif-baileys-md@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "hanif-baileys-md@npm:4.0.0"
-  dependencies:
-    "@hapi/boom": ^9.1.3
-    axios: ^0.24.0
-    curve25519-js: ^0.0.4
-    libsignal: "git+https://github.com/adiwajshing/libsignal-node.git"
-    music-metadata: ^7.4.1
-    node-cache: ^5.1.2
-    pino: ^7.0.0
-    protobufjs: ^6.10.1
-    ws: ^8.0.0
-  peerDependencies:
-    "@adiwajshing/keyed-db": ^0.2.4
-    jimp: ^0.16.1
-    qrcode-terminal: ^0.12.0
-    sharp: ^0.29.3
-  checksum: f7882e792977497359a4927553f19bb81311413b6e4ba74d6a6f64dc306970ab7af7dc350d6f6f022da972b4a0ff32cdd03fb708afadfbdfe1efabcdf1b4d97a
   languageName: node
   linkType: hard
 
@@ -2682,16 +2653,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "pino@npm:7.2.0"
+"pino@npm:^7.8.1":
+  version: 7.8.1
+  resolution: "pino@npm:7.8.1"
   dependencies:
     fast-redact: ^3.0.0
-    fastify-warning: ^0.2.0
-    get-caller-file: ^2.0.5
     on-exit-leak-free: ^0.2.0
     pino-abstract-transport: v0.5.0
     pino-std-serializers: ^4.0.0
+    process-warning: ^1.0.0
     quick-format-unescaped: ^4.0.3
     real-require: ^0.1.0
     safe-stable-stringify: ^2.1.0
@@ -2699,7 +2669,7 @@ __metadata:
     thread-stream: ^0.13.0
   bin:
     pino: bin.js
-  checksum: e921003000ef370a00277d5b03e91a6b5ff679c1753de37b9b94e3bc033b4e07b76fadf98eb5ee5eee8324759a2fa8146e7c857a82ae24ddb89cf94f84081aa1
+  checksum: 415ffd418bcc17fbd9c591f95ed9655e2af62b5e86a383ac936215334f032e6f1cf073ccdb71321a414f1f652e1388cf40bf2aabb6baf17d18df35eda88937c6
   languageName: node
   linkType: hard
 
@@ -3591,10 +3561,9 @@ __metadata:
     eslint: ^8.2.0
     eslint-config-google: ^0.14.0
     got: ^11.8.3
-    hanif-baileys-md: ^4.0.0
     husky: ^7.0.4
     ioredis: ^4.28.0
-    pino: ^7.2.0
+    pino: ^7.8.1
     pino-pretty: ^7.2.0
     pretty-ms: ^7.0.1
     qrcode: ^1.4.4

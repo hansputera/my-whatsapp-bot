@@ -329,7 +329,7 @@ export class Context {
                 {
                   'url': audio,
                 } : audio,
-            'pttAudio': isVN,
+            'ptt': isVN,
             ...anotherOptions,
           }, {
             'quoted': this.msg,

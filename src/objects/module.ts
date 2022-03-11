@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import {ModuleInfo, CommandInfo, EventInfo} from '../types';
 import {createLogger} from './logger';
 import {Client} from './client';
-import {BaileysEventMap} from '@adiwajshing/baileys';
+import {AuthenticationCreds, BaileysEventMap} from '@adiwajshing/baileys';
 
 /**
  * @class Modules
@@ -11,7 +11,7 @@ import {BaileysEventMap} from '@adiwajshing/baileys';
 export class Modules {
   public commands: Map<string, CommandInfo> = new Map();
   public mods: Map<string, ModuleInfo> = new Map();
-  public listens: (keyof BaileysEventMap)[] = [];
+  public listens: (keyof BaileysEventMap<AuthenticationCreds>)[] = [];
 
   public logger = createLogger('modules');
 

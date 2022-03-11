@@ -1,9 +1,9 @@
 import {Client, Util} from '../objects';
-import {BaileysEventMap} from '@adiwajshing/baileys';
+import {BaileysEventMap, AuthenticationCreds} from '@adiwajshing/baileys';
 
 const groupParticipantUpdateHandle = async (
     client: Client,
-    arg: BaileysEventMap['group-participants.update'],
+    arg: BaileysEventMap<AuthenticationCreds>['group-participants.update'],
 ) => {
   const group = client.groupsCache.get(
       arg.id,
