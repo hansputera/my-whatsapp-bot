@@ -1,8 +1,10 @@
 import * as path from 'node:path';
-import baileys, {SocketConfig} from '@slonbook/baileys-md';
+import baileys, {SocketConfig} from '@adiwajshing/baileys';
 import {createLogger} from './logger';
 import {Modules} from './module';
 import {MessageCollector} from '../extends/collector';
+import {GroupContext} from '../extends/group';
+import {Readable} from 'stream';
 
 /**
  * @class Client
@@ -26,4 +28,7 @@ export class Client {
   ));
   public startTime = Date.now();
   public collectors: Map<string, MessageCollector> = new Map();
+
+  public groupsCache: Map<string, GroupContext> = new Map();
+  public youtubeStreams: Map<string, Readable> = new Map();
 }

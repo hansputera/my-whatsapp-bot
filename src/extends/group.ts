@@ -1,6 +1,7 @@
-import {GroupMetadata} from '@slonbook/baileys-md';
+import {GroupMetadata, AnyMessageContent} from '@adiwajshing/baileys';
 import {Client} from '../objects';
 import {GroupParticipantContext} from './group.participant';
+import {Context} from './context';
 
 /**
  * @class GroupContext
@@ -88,5 +89,18 @@ export class GroupContext {
     return this.raw.participants.map(
         (p) => new GroupParticipantContext(this.client, p),
     );
+  }
+
+  /**
+   * Send a message to group
+   *
+   * @param {AnyMessageContent} content - WhatsApp Content
+   * @return {Promise<Context>}
+   */
+  public async send(content: AnyMessageContent): Promise<Context> {
+    return new Context(this.client,
+        await this.client.baileys.sendMessage(
+            this.jid, content,
+        ), false); // avoid internal error.
   }
 }

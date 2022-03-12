@@ -1,4 +1,4 @@
-import {Brainly, Question, Answer} from 'brainly-scraper-v2';
+import {Brainly, Question, Answer, CountryList} from 'brainly-scraper-v2';
 import type {CommandFunc} from '../../types';
 import type {Context} from '../../extends/context';
 import {Util} from '../../objects';
@@ -14,6 +14,25 @@ const brainlyCommand: CommandFunc = async (
       return;
     }
 
+    let langF = ctx.flags
+        .find((f) => ['lang', 'language', 'bahasa']
+            .includes(f.split('=')[0].toLowerCase()) && f.split('=')[1]);
+    if (langF &&
+            Brainly.isValidLanguage(
+                langF.split('=')[1].toLowerCase() as CountryList)) {
+      langF = langF.split('=')[1]
+          .toLowerCase() as CountryList;
+      await ctx.reply('If the answer options is different ' +
+                        'from requested language, it means the ' +
+                            'answer was saved/cached in my' +
+                            ' brain.\n' +
+                            'Why? We want increase the brainly searching' +
+                                ' speed and avoid ' +
+                                    'getting blocked from brainly site.');
+    } else {
+      langF = 'id' as CountryList;
+    }
+
     const brainly = new Brainly();
 
     const redisResult = await redis.get(
@@ -26,7 +45,7 @@ const brainlyCommand: CommandFunc = async (
             question: Question;
             answers: Answer[];
         }[] :
-                await brainly.searchWithMT('id', question);
+                await brainly.searchWithMT(langF as CountryList, question);
 
     await redis.set('br-' +
             encodeURIComponent(question.toLowerCase()), JSON.stringify(qs));
@@ -39,7 +58,11 @@ const brainlyCommand: CommandFunc = async (
 
     const LCtx = await ctx.reply('Please type number bellow [1-' +
             qs.length + ']\n\n' +
-                qs.map((q, i) => i+1 + '. ' + q.question.content).join('\n'));
+                qs.map((q, i) => i+1 + '. ' + (q.question.content.trim()
+                    .length > 100 ? q.question.content.trim()
+                        .substr(0, 101) + '...' : q.question.content
+                            .trim()),
+                ).join('\n'));
     const collector = ctx.getCollector({
       'max': 1,
       'time': 30 * 1000,
@@ -52,8 +75,13 @@ const brainlyCommand: CommandFunc = async (
 
     await collector.wait();
 
-    await LCtx.delete();
-    if (!collector.contexts) {
+    if (!collector.contexts.length && ctx.isGroup && !ctx.getGroup()) {
+      return;
+    }
+
+    await LCtx?.delete();
+
+    if (!collector.contexts.length) {
       await ctx.reply('Time is up, try again!');
       return;
     }
@@ -75,8 +103,8 @@ const brainlyCommand: CommandFunc = async (
       const img = answer.attachments[0];
       const t = `${answer.content}\n\nBy: ${answer.author ? answer.author.username || answer.author.id : 'unknown.'}\nThanks/Rate Count: ${answer.thanksCount}/${answer.ratesCount}\nIs best answer? ${answer.isBest ? 'Yes' : 'Nope.'}`;
       if (img) {
-        await qMsg.replyWithPhoto(img, t);
-      } else await qMsg.reply(t);
+        await qMsg?.replyWithPhoto(img, t);
+      } else await qMsg?.reply(t);
     });
   } catch (e) {
     await ctx.reply('Something was wrong, try again p'+

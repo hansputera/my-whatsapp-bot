@@ -1,15 +1,15 @@
 import {Client, Util} from '../objects';
-import type {BaileysEventMap} from '@slonbook/baileys-md';
+import type {BaileysEventMap, AuthenticationCreds} from '@adiwajshing/baileys';
 import {Context} from '../extends/context';
 import {messageCollector, cooldownMiddleware} from '../middleware';
 import {devs} from '../config';
 
 const messageUpsertHandle = async (
     client: Client,
-    arg: BaileysEventMap['messages.upsert'],
+    arg: BaileysEventMap<AuthenticationCreds>['messages.upsert'],
 ) => {
   if (arg.messages.length) {
-    const ctx = new Context(client, arg.messages[0]);
+    const ctx = new Context(client, arg.messages[0], true);
     if (ctx.timestamp < ctx.client.startTime) {
       ctx.client.logger.info(ctx.id +
                 ' message was blocked');

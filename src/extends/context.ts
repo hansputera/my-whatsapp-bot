@@ -1,11 +1,12 @@
 import {Client} from '../objects';
-import {proto, AnyMessageContent} from '@slonbook/baileys-md';
+import {proto, AnyMessageContent, GroupParticipant} from '@adiwajshing/baileys';
 import Long from 'long';
 import {prefixes} from '../config';
 import {MessageCollector} from './collector';
 import {CommandInfo, CollectorOptions} from '../types';
 import {createLogger} from '../objects';
 import {Sticker, Image, Video} from './messages';
+import {GroupContext} from './group';
 
 /**
  * @class Context
@@ -15,9 +16,14 @@ export class Context {
   /**
      * @param {Client} client
      * @param {proto.IWebMessageInfo} msg
+     * @param {boolean} groupSync
      */
-  constructor(public client: Client, public msg: proto.IWebMessageInfo) {
+  constructor(
+      public client: Client,
+      public msg: proto.IWebMessageInfo,
+      groupSync?: boolean) {
     this.reloadQuery();
+    if (groupSync) this.syncGroup();
   }
 
   public args: string[] = [];
@@ -37,6 +43,17 @@ export class Context {
      */
   public get isFromMe(): boolean {
     return this.msg.key.fromMe as boolean;
+  }
+
+  /**
+   * Get group context data (if any)
+   *
+   * @return {GroupContext | undefined}
+   */
+  public getGroup(): GroupContext | undefined {
+    return this.client.groupsCache.get(
+        this.currentJid() + '@g.us',
+    );
   }
 
   /**
@@ -149,8 +166,8 @@ export class Context {
      * @return {string}
      */
   public get authorNumber(): string | undefined {
-    return this.msg.participant ?
-            this.msg.participant.replace(
+    return this.msg.key.participant ?
+            this.msg.key.participant.replace(
                 /\@.+/gi, '',
             ) :
             (this.isFromMe ?
@@ -166,6 +183,22 @@ export class Context {
    */
   public getCollector(options?: CollectorOptions): MessageCollector {
     return new MessageCollector(this, options);
+  }
+
+  /**
+   * Get GroupParticipant class.
+   *
+   * @return {GroupParticipant | undefined}
+   */
+  public get participant(): GroupParticipant | undefined {
+    if (!this.isGroup) return undefined;
+    else if (this.isGroup && !this.client.groupsCache.has(
+          this.msg.key.remoteJid as string,
+    )) return undefined;
+
+    return this.client.groupsCache.get(
+        this.msg.key.remoteJid as string,
+    )?.members.find((m) => m.id === this.authorNumber);
   }
 
   /**
@@ -186,8 +219,8 @@ export class Context {
    * @return {boolean}
    */
   public get isGroup(): boolean {
-    return this.currentJid().split('-')
-        .length == 2;
+    return !((this.authorNumber as string) ===
+        this.currentJid());
   }
 
   /**
@@ -256,7 +289,7 @@ export class Context {
   public get timestamp(): number {
     if (this.msg.messageTimestamp instanceof Long) {
       return this.msg.messageTimestamp.toInt() * 1000;
-    } else return this.msg.messageTimestamp as number;
+    } else return (this.msg.messageTimestamp as number) * 1000;
   }
 
   /**
@@ -266,14 +299,19 @@ export class Context {
      * @param {AnyMessageContent} anotherOptions - Send message options
      */
   public async reply(text: string, anotherOptions?: AnyMessageContent) {
-    return new Context(this.client, await this.client.baileys.sendMessage(
-            this.msg.key.remoteJid as string, {
-              'text': text,
-              ...anotherOptions,
-            }, {
-              quoted: this.msg,
-            },
-    ));
+    try {
+      return new Context(this.client, await this.client.baileys.sendMessage(
+                this.msg.key.remoteJid as string, {
+                  'text': text,
+                  ...anotherOptions,
+                }, {
+                  quoted: this.msg,
+                },
+      ));
+    } catch (e) {
+      this.logger.error('Error to send a message: ' + text, e);
+      return undefined;
+    }
   }
 
   /**
@@ -284,18 +322,23 @@ export class Context {
    */
   public async replyWithAudio(audio: Buffer | string,
       isVN: boolean = false, anotherOptions?: AnyMessageContent) {
-    return new Context(this.client, await this.client.baileys.sendMessage(
+    try {
+      return new Context(this.client, await this.client.baileys.sendMessage(
           this.msg.key.remoteJid as string, {
             'audio': typeof audio === 'string' ?
                 {
                   'url': audio,
                 } : audio,
-            'pttAudio': isVN,
+            'ptt': isVN,
             ...anotherOptions,
           }, {
             'quoted': this.msg,
           },
-    ));
+      ));
+    } catch (e) {
+      this.logger.error('Error want to send a message: AUDIO', e);
+      return undefined;
+    }
   }
 
   /**
@@ -314,17 +357,22 @@ export class Context {
       (anotherOptions as Record<string, unknown>)['caption'] =
         caption;
     }
-    return new Context(this.client, await this.client.baileys.sendMessage(
-          this.msg.key.remoteJid as string, {
-            'video': typeof video === 'string' ?
-                {
-                  'url': video,
-                } : video,
-            ...anotherOptions,
-          }, {
-            'quoted': this.msg,
-          },
-    ));
+    try {
+      return new Context(this.client, await this.client.baileys.sendMessage(
+            this.msg.key.remoteJid as string, {
+              'video': typeof video === 'string' ?
+                    {
+                      'url': video,
+                    } : video,
+              ...anotherOptions,
+            }, {
+              'quoted': this.msg,
+            },
+      ));
+    } catch (e) {
+      this.logger.error('Error want to send a message: VIDEO', e);
+      return undefined;
+    }
   }
 
   /**
@@ -334,12 +382,17 @@ export class Context {
    * @param {AnyMessageContent} anotherOptions - Send message options
    */
   public async send(text: string, anotherOptions?: AnyMessageContent) {
-    return new Context(this.client, await this.client.baileys.sendMessage(
-          this.msg.key.remoteJid as string, {
-            'text': text,
-            ...anotherOptions,
-          },
-    ));
+    try {
+      return new Context(this.client, await this.client.baileys.sendMessage(
+            this.msg.key.remoteJid as string, {
+              'text': text,
+              ...anotherOptions,
+            },
+      ));
+    } catch (e) {
+      this.logger.error('Error want to send a message: NORMAL TEXT', e);
+      return undefined;
+    }
   }
 
   /**
@@ -356,16 +409,21 @@ export class Context {
       (anotherOptions as Record<string, unknown>)['caption'] =
           caption;
     }
-    return new Context(this.client, await this.client.baileys.sendMessage(
-          this.msg.key.remoteJid as string, {
-            'image': typeof photo === 'string' ?
-                {'url': photo} : photo,
-            'mimetype': 'image/png',
-            ...anotherOptions,
-          }, {
-            'quoted': this.msg,
-          },
-    ));
+    try {
+      return new Context(this.client, await this.client.baileys.sendMessage(
+            this.msg.key.remoteJid as string, {
+              'image': typeof photo === 'string' ?
+                    {'url': photo} : photo,
+              'mimetype': 'image/png',
+              ...anotherOptions,
+            }, {
+              'quoted': this.msg,
+            },
+      ));
+    } catch (e) {
+      this.logger.error('Error want to send a message: PHOTO', e);
+      return undefined;
+    }
   }
 
   /**
@@ -374,7 +432,8 @@ export class Context {
    * @param {Buffer | string} sticker
    */
   public async replyWithSticker(sticker: Buffer | string) {
-    return new Context(this.client, await this.client.baileys.sendMessage(
+    try {
+      return new Context(this.client, await this.client.baileys.sendMessage(
           this.msg.key.remoteJid as string, {
             'sticker': typeof sticker === 'string' ?
                 {
@@ -383,18 +442,48 @@ export class Context {
           }, {
             'quoted': this.msg,
           },
-    ));
+      ));
+    } catch (e) {
+      this.logger.error('Error want to send a message: STICKER', e);
+      return undefined;
+    }
   }
 
   /**
    * Delete this message
    */
   public async delete() {
-    return await this.client.baileys.sendMessage(
+    try {
+      return await this.client.baileys.sendMessage(
           this.msg.key.remoteJid as string, {
             'delete': this.msg.key,
           },
-    );
+      );
+    } catch (e) {
+      this.logger.error('Error want to delete a message: ', e);
+      return undefined;
+    }
+  }
+
+  /**
+   * If the chat is in a group, add it to cache.
+   *
+   * @return {Promise<boolean>}
+   */
+  public async syncGroup(): Promise<boolean> {
+    if (!this.isGroup ||
+            this.client.groupsCache.has(
+                this.msg.key.remoteJid as string,
+            )) return false;
+
+    const groupMeta = await this
+        .client.baileys.groupMetadata(
+            this.msg.key.remoteJid as string,
+        );
+
+    this.client.groupsCache.set(this.msg.key.remoteJid as string,
+        new GroupContext(this.client, groupMeta));
+    return true;
   }
 }
 

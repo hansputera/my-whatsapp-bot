@@ -2,8 +2,6 @@
 
 Hello there, welcome to my personal whatsapp bot project. I use the [Baileys Multi-Device](https://github.com/adiwajshing/baileys) module where it uses websocket.
 
-But, in this project. I'm using an unofficial module (maybe), [@slonbook/baileys-md](https://npmjs.com/@slonbook/baileys-md) (Compiled Baileys Multi-Device code)
-
 ## Features
 
 **Converter:**

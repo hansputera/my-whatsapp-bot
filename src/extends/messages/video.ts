@@ -1,5 +1,5 @@
 import {MessageMediaBase} from '.';
-import {proto} from '@slonbook/baileys-md';
+import {proto} from '@adiwajshing/baileys';
 import {Util} from '../../objects';
 
 /**

@@ -1,5 +1,5 @@
 import {Context} from '../extends/context';
-import type {BaileysEventMap} from '@slonbook/baileys-md';
+import type {BaileysEventMap, AuthenticationCreds} from '@adiwajshing/baileys';
 import {Client} from '../objects';
 
 export type CommandFunc = (ctx: Context) => Promise<void>;
@@ -27,7 +27,7 @@ export interface CollectorOptions {
 }
 
 export interface EventInfo {
-    name: keyof BaileysEventMap;
+    name: keyof BaileysEventMap<AuthenticationCreds>;
     target:
         (client: Client, args: any)
             => Promise<void> | void;

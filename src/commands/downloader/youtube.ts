@@ -63,7 +63,9 @@ export const YouTubeDownloader: CommandFunc = async (
     collector.start();
     await collector.wait();
 
-    await contextSelect.delete();
+    if (!collector.contexts.length && ctx.isGroup && !ctx.getGroup()) return;
+
+    await contextSelect?.delete();
     const num = collector.contexts[0].text;
     if (isNaN(num as unknown as number)) {
       await ctx.reply('Invalid option!');
@@ -134,6 +136,15 @@ export const YouTubeDownloader: CommandFunc = async (
       await ctx.replyWithAudio(buffs);
     } else if (mediaFlag && mediaFlag === 'mp4' || mediaFlag === 'video') {
       await ctx.replyWithVideo(buffs, `Downloaded *${info.name}*`);
+    }
+  });
+
+  stream.on('error', (err) => {
+    if (err.message === 'leaved') {
+      ctx.client.logger.warn(
+          'YouTube Download for: ' + ctx.currentJid() +
+                'stopped because getting kicked from the group!',
+      );
     }
   });
 };

@@ -8,7 +8,9 @@ import * as qr from 'qrcode';
 import {
   useSingleFileAuthState,
   DisconnectReason,
-} from '@slonbook/baileys-md';
+  BaileysEventMap,
+  AuthenticationCreds,
+} from '@adiwajshing/baileys';
 import {Client} from './objects';
 
 /**
@@ -35,7 +37,8 @@ function initSock(): void {
         client.logger.info('Trying to reconnect');
         client.modules.free();
         for (const listener of client.modules.listens) {
-          client.baileys.ev.removeAllListeners(listener);
+          client.baileys.ev.removeAllListeners(
+            listener as keyof BaileysEventMap<AuthenticationCreds>);
         }
         initSock();
       }
@@ -53,6 +56,7 @@ function initSock(): void {
   client.modules.loads();
   client.modules.loadEvents();
 }
+
 
 process.setMaxListeners(20);
 initSock();
