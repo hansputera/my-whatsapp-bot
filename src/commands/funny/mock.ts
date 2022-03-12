@@ -35,6 +35,10 @@ const mockCommand: CommandFunc = async (
     await loadingText?.delete();
 
     const json = JSON.parse(anImage.body);
+    if (!json.success) {
+      await ctx.reply('Un-successful response from IMFLIP server: *' +
+        json.error_message + '*');
+    }
 
     await ctx.replyWithPhoto(json.data.url, Util.mockText(text + ' ' + text1));
   } catch (e) {
