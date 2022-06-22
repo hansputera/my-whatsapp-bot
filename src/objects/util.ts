@@ -83,8 +83,8 @@ export class Util {
         let data = Buffer.concat([remainBytes, chunk]);
         const decryptLength =
                     Math.floor(data.length / 16) * 16;
-        remainBytes = data.slice(decryptLength);
-        data = data.slice(0, decryptLength);
+        remainBytes = data.subarray(decryptLength);
+        data = data.subarray(0, decryptLength);
 
         try {
           this.push(aes.update(data));
