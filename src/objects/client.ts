@@ -1,5 +1,5 @@
 import * as path from 'node:path';
-import baileys, {SocketConfig} from '@adiwajshing/baileys';
+import baileys, {UserFacingSocketConfig} from '@adiwajshing/baileys';
 import {createLogger} from './logger';
 import {Modules} from './module';
 import {MessageCollector} from '../extends/collector';
@@ -12,9 +12,9 @@ import {Readable} from 'stream';
 export class Client {
   /**
      * Client constructor.
-     * @param {Partial<SocketConfig>} _options - Baileys socket configuration.
+     * @param {UserFacingSocketConfig} _options - Baileys socket configuration.
      */
-  constructor(private _options?: Partial<SocketConfig>) {}
+  constructor(private _options: UserFacingSocketConfig) {}
 
   public logger = createLogger('client');
   public baileys = baileys({
