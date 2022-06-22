@@ -14,9 +14,9 @@ import {GroupContext} from './group';
 export class Context {
   public logger = createLogger('context-' + this.id);
   /**
-     * @param {Client} client
-     * @param {proto.IWebMessageInfo} msg
-     * @param {boolean} groupSync
+     * @param {Client} client Client instance.
+     * @param {proto.IWebMessageInfo} msg proto.IWebMessageInfo data.
+     * @param {boolean} groupSync Sync the group if available?
      */
   constructor(
       public client: Client,
@@ -479,7 +479,12 @@ export class Context {
     const groupMeta = await this
         .client.baileys.groupMetadata(
             this.msg.key.remoteJid as string,
-        );
+        ).catch((err) => err.message);
+
+    if (typeof groupMeta === 'string') {
+      console.warn('Couldn\'t sync the group for chat', this.id);
+      return false;
+    }
 
     this.client.groupsCache.set(this.msg.key.remoteJid as string,
         new GroupContext(this.client, groupMeta));
