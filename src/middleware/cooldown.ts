@@ -24,7 +24,7 @@ export const cooldownMiddleware = async (
         JSON.stringify({
           'cooldown': Date.now() + command.cooldown,
           'warned': false,
-        }), 'px', command.cooldown);
+        }), 'PX', command.cooldown);
 
     return true;
   }
