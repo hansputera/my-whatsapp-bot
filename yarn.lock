@@ -672,7 +672,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"brainly-scraper-v2@npm:^2.0.9":
+"brainly-scraper-v2@npm:^2.0.13":
   version: 2.0.13
   resolution: "brainly-scraper-v2@npm:2.0.13"
   dependencies:
@@ -3373,7 +3373,7 @@ __metadata:
     "@types/sharp": ^0.29.4
     "@typescript-eslint/eslint-plugin": ^5.4.0
     "@typescript-eslint/parser": ^5.4.0
-    brainly-scraper-v2: ^2.0.9
+    brainly-scraper-v2: ^2.0.13
     dotenv: ^10.0.0
     eslint: ^8.2.0
     eslint-config-google: ^0.14.0
