@@ -136,9 +136,6 @@ export const YouTubeDownloader: CommandFunc = async (ctx: Context) => {
 	await redis.incr('yt-session-' + ctx.authorNumber);
 
 	stream.on('data', (ch) => {
-		ctx.client.logger.info(
-			new Blob([buffs]).size + ' bytes downloaded at: ' + info.url,
-		);
 		if (new Blob([buffs]).size >= 215000000) {
 			stream.destroy();
 			ctx.reply('Downloaded has been stopped due storage limit!');
