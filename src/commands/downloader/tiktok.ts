@@ -46,9 +46,7 @@ const sendTikTokFunc = async (
         followRedirect: true,
       },
   );
-  const text = `*${data.video?.title ?? 'No title.'}* - *${data.video?.duration ?? '-'}*${
-    data.caption ? '\n\n' + data.caption : ''
-  }`;
+  const text = `*${data.video?.title ?? 'No title.'}*`;
 
   await ctx.replyWithVideo(response.rawBody, text);
 };
@@ -68,11 +66,10 @@ const tiktokDownloaderCommand: CommandFunc = async (
     } else {
       try {
         const response = await Util.fetch(
-            'https://tiktok-dl.tslab.site/api/download', {
+            'https://tdl.heran.xyz/api/download', {
               'searchParams': {
                 'url': url,
-                'nocache': 'true',
-                'type': 'snaptik',
+                'type': 'savefrom',
               },
             });
 
@@ -84,16 +81,11 @@ const tiktokDownloaderCommand: CommandFunc = async (
           );
           return;
         } else {
-          if (json.provider === 'tikmate' || json.provider === 'dltik') {
-            await tiktokDownloaderCommand(new Context(ctx.client, ctx.msg));
-            return;
-          }
           await redis.set(url, response.body);
           await sendTikTokFunc(ctx, json);
           return;
         }
       } catch (e) {
-        console.log((e as any).response.body);
         if (/expected/gi.test((e as any).response.body)) {
           await ctx.reply('Maybe your url isn\'t valid, try again please!');
           return;

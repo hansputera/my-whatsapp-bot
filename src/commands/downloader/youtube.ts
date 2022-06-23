@@ -154,5 +154,5 @@ export default Util.makeCommandConfig({
   'desc': 'Download YouTube video',
   'alias': ['yt', 'ytdl', 'downloadyt'],
   'target': YouTubeDownloader,
-  'cooldown': 60000,
+  'cooldown': 30_000,
 });
