@@ -46,10 +46,6 @@ async function generateKey() {
   console.log('Welcome to Key Generator Script');
   console.log('Date time:', new Date());
 
-  const collectedData = {
-    'key': Buffer.alloc(0),
-  };
-
   const readlineInterface = readline.createInterface({
     input: stdin,
     output: stdout,
@@ -96,15 +92,25 @@ async function generateKey() {
     memLevel: constants.Z_RLE,
   });
 
+
   const contentsOnEnv = readFileSync(resolve(cwd(), '.env'), { encoding: 'utf8' });
   const contentsParsed = dotenv.parse(contentsOnEnv.concat(
     '\n', 'PRIVATE_KEY=', compressedPrivateKey.toString('hex'),
+    '\n', 'KEY=', secretKey,
   ));
 
   writeFileSync(resolve(cwd(), '.env'), Object.keys(contentsParsed).map((x) => `${x}=${contentsParsed[x]}`).join('\n'));
 
   console.log('Done! See you next time!');
   readlineInterface.close();
+}
+
+if (existsSync(resolve(cwd(), 'keys', 'public.key.pem'))) {
+  console.log('Public key exists, delete it first!');
+  process.exit(1);
+} else if (existsSync(resolve(cwd(), 'keys', 'private.key.pem'))) {
+  console.log('Private key exists, delete it first!');
+  process.exit(1);
 }
 
 generateKey();
