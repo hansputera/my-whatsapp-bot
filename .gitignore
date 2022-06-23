@@ -4,4 +4,4 @@ dist
 .env
 src/config.ts
 .yarn
-
+keys/private.*
