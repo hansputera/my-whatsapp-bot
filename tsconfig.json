@@ -1,18 +1,18 @@
 {
-    "compilerOptions": {
-        "allowJs": true,
-        "strict": true,
-        "strictBindCallApply": true,
-        "strictFunctionTypes": true,
-        "strictNullChecks": true,
-        "strictPropertyInitialization": true,
-        "outDir": "dist",
-        "module": "CommonJS",
-        "target": "ES6",
-        "pretty": true,
-        "skipDefaultLibCheck": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true
-    },
-    "exclude": ["node_modules"]
+	"compilerOptions": {
+		"allowJs": true,
+		"strict": true,
+		"strictBindCallApply": true,
+		"strictFunctionTypes": true,
+		"strictNullChecks": true,
+		"strictPropertyInitialization": true,
+		"outDir": "dist",
+		"module": "CommonJS",
+		"target": "ES6",
+		"pretty": true,
+		"skipDefaultLibCheck": true,
+		"skipLibCheck": true,
+		"esModuleInterop": true
+	},
+	"exclude": ["node_modules"]
 }

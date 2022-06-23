@@ -1,6 +1,6 @@
-import type {ModuleInfo} from '../../types';
+import type { ModuleInfo } from '../../types';
 
 export default {
-  'name': 'Converter',
-  'hide': false,
+	'name': 'Converter',
+	'hide': false,
 } as ModuleInfo;

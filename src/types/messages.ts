@@ -1,6 +1,6 @@
-import type {MessageUpdateType, proto} from '@adiwajshing/baileys';
+import type { MessageUpdateType, proto } from '@adiwajshing/baileys';
 
 export interface MessageUpsert {
-    messages: proto.IWebMessageInfo[];
-    type: MessageUpdateType;
-};
+	messages: proto.IWebMessageInfo[];
+	type: MessageUpdateType;
+}

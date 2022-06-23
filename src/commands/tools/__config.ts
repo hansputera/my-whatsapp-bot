@@ -1,8 +1,6 @@
-import type {
-  ModuleInfo,
-} from '../../types';
+import type { ModuleInfo } from '../../types';
 
 export default {
-  'name': 'Tools',
-  'hide': false,
+	'name': 'Tools',
+	'hide': false,
 } as ModuleInfo;
