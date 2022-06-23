@@ -49,7 +49,7 @@ const brainlyCommand: CommandFunc = async (ctx: Context) => {
 					question: Question;
 					answers: Answer[];
 			  }[])
-			: await brainly.searchWithMT(langF as CountryList, question);
+			: await brainly.searchWithMT(question, langF as CountryList);
 
 		await redis.set(
 			'br-' + encodeURIComponent(question.toLowerCase()),
