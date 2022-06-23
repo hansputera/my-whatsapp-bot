@@ -7,7 +7,7 @@ import {
 } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { inflateSync } from 'node:zlib';
+import { inflateSync, constants as ZlibConstants } from 'node:zlib';
 
 /**
  * @class RSA
@@ -31,10 +31,18 @@ export class RSA {
 				);
 			if (process.env.PRIVATE_KEY) {
 				privateKeyContent = inflateSync(
-					Buffer.from(privateKeyContent),
+					Buffer.from(privateKeyContent, 'hex'),
+					{
+						'level': ZlibConstants.Z_BEST_COMPRESSION,
+						'memLevel': ZlibConstants.Z_RLE,
+					},
 				).toString('hex');
 				privateKeyContent = inflateSync(
 					Buffer.from(privateKeyContent, 'hex'),
+					{
+						'level': ZlibConstants.Z_BEST_COMPRESSION,
+						'memLevel': ZlibConstants.Z_RLE,
+					},
 				).toString('utf8');
 			}
 			const publicKeyContent = readFileSync(
