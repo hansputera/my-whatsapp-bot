@@ -1,4 +1,4 @@
-import { generateKeyPairSync } from 'node:crypto';
+import { generateKeyPairSync, randomBytes, scryptSync } from 'node:crypto';
 import dotenv from 'dotenv';
 import * as readline from 'node:readline/promises';
 import { cwd, stdin, stdout } from 'node:process';
@@ -98,6 +98,7 @@ async function generateKey() {
 	const contentsOnEnv = readFileSync(resolve(cwd(), '.env'), {
 		encoding: 'utf8',
 	});
+	const hashSecretKey = scryptSync(secretKey, randomBytes(16), 32);
 	const contentsParsed = dotenv.parse(
 		contentsOnEnv.concat(
 			'\n',
@@ -105,7 +106,7 @@ async function generateKey() {
 			compressedPrivateKey.toString('hex'),
 			'\n',
 			'KEY=',
-			secretKey,
+			hashSecretKey.toString('hex'),
 		),
 	);
 
