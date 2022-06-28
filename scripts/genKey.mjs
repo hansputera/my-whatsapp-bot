@@ -63,13 +63,15 @@ async function generateKey() {
 		},
 	);
 
+	const hashSecretKey = scryptSync(secretKey, randomBytes(16), 32);
+
 	console.log('\nGenerating key..');
 	const keyPair = generateKeyPairSync('rsa', {
 		modulusLength: 4096,
 		privateKeyEncoding: {
 			type: 'pkcs1',
 			format: 'pem',
-			passphrase: secretKey,
+			passphrase: hashSecretKey.toString('hex'),
 			cipher: 'aes-256-cbc',
 		},
 		publicKeyEncoding: {
@@ -98,7 +100,6 @@ async function generateKey() {
 	const contentsOnEnv = readFileSync(resolve(cwd(), '.env'), {
 		encoding: 'utf8',
 	});
-	const hashSecretKey = scryptSync(secretKey, randomBytes(16), 32);
 	const contentsParsed = dotenv.parse(
 		contentsOnEnv.concat(
 			'\n',
