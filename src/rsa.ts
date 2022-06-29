@@ -15,6 +15,7 @@ import { inflateSync, constants as ZlibConstants } from 'node:zlib';
 export class RSA {
 	private privateKey!: KeyObject;
 	public publicKey!: KeyObject;
+	public secretKey!: Buffer;
 
 	/**
 	 * @constructor
@@ -29,6 +30,7 @@ export class RSA {
 						'encoding': 'utf8',
 					},
 				);
+			this.secretKey = Buffer.from(process.env.KEY, 'hex');
 			if (process.env.PRIVATE_KEY) {
 				privateKeyContent = inflateSync(
 					Buffer.from(privateKeyContent, 'hex'),
@@ -92,3 +94,5 @@ export class RSA {
 		}
 	}
 }
+
+export const rsa = new RSA();
