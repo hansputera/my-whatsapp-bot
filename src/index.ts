@@ -73,5 +73,5 @@ async function initSock(): Promise<void> {
 	}
 }
 
-process.setMaxListeners(20);
+process.setMaxListeners(10);
 initSock();
