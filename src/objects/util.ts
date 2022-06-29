@@ -134,4 +134,14 @@ export class Util {
 		);
 		return temp;
 	}
+
+	/**
+	 * Split the text every n.
+	 * @param {string} text The text want to split.
+	 * @param {number} count Split text every (n=count)
+	 * @return {string[]}
+	 */
+	static pecahText(text: string, count: number): string[] {
+		return text.match(new RegExp('.{1,' + count + '}', 'g')) ?? [];
+	}
 }
