@@ -45,15 +45,19 @@ const HelpCommand: CommandFunc = async (ctx: Context) => {
 			}
 		} else {
 			await ctx.reply(
-				`==== *${cmd.name.toUpperCase()} Command* ====\n\n- ${
+				`➙ *${cmd.name.toUpperCase()} Command*\n\n${
 					cmd.desc
-				}\n\nYou need to wait _${(
-					(cmd.cooldown as number) / 1000
-				).toFixed(
-					2,
-				)} second(s)_ to use this command after you had execute another command.\nAlso, you can use: ${cmd.alias?.join(
-					',',
-				)} to execute this command.`,
+				}\n\nYou need to wait *${Util.parseDuration(
+					cmd.cooldown || 5000,
+					{
+						'colonNotation': false,
+						'compact': false,
+					},
+				)}* to use this command.\nAliases: \n${
+					cmd.alias?.length
+						? cmd.alias.map((alias) => `✳ ${alias}`).join('\n')
+						: '-'
+				}`,
 			);
 		}
 	}

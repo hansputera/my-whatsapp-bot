@@ -37,12 +37,12 @@ async function initSock(): Promise<void> {
 					DisconnectReason.loggedOut
 				) {
 					client.logger.info('Trying to reconnect');
-					client.modules.free();
 					for (const listener of client.modules.listens) {
 						client.baileys.ev.removeAllListeners(
 							listener,
 						);
 					}
+					client.modules.free();
 					initSock();
 				}
 				if (existsSync(resolvePath(__dirname, '..', 'qr.png'))) {
