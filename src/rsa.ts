@@ -94,5 +94,3 @@ export class RSA {
 		}
 	}
 }
-
-export const rsa = new RSA();
