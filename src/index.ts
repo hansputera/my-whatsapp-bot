@@ -5,10 +5,7 @@ import { unlinkSync, existsSync } from 'node:fs';
 import type { Boom } from '@hapi/boom';
 
 import * as qr from 'qrcode';
-import {
-	DisconnectReason,
-	AuthenticationState,
-} from '@adiwajshing/baileys';
+import { DisconnectReason, AuthenticationState } from '@adiwajshing/baileys';
 import { Client } from './objects';
 import { useAuthStateFile } from './authState';
 
@@ -38,9 +35,7 @@ async function initSock(): Promise<void> {
 				) {
 					client.logger.info('Trying to reconnect');
 					for (const listener of client.modules.listens) {
-						client.baileys.ev.removeAllListeners(
-							listener,
-						);
+						client.baileys.ev.removeAllListeners(listener);
 					}
 					client.modules.free();
 					initSock();
