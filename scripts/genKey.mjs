@@ -108,6 +108,9 @@ async function generateKey() {
 			'\n',
 			'KEY=',
 			hashSecretKey.toString('hex'),
+			'\n',
+			'AES_IV=',
+			randomBytes(16).toString('hex'),
 		),
 	);
 
