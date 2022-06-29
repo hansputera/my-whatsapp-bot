@@ -5,7 +5,6 @@ import { Modules } from './module';
 import { MessageCollector } from '../extends/collector';
 import { GroupContext } from '../extends/group';
 import { Readable } from 'stream';
-import { RSA } from '../rsa';
 
 /**
  * @class Client
@@ -27,7 +26,6 @@ export class Client {
 		path.resolve(__dirname, '..', 'commands'),
 		path.resolve(__dirname, '..', 'listeners'),
 	);
-	public rsa = new RSA();
 	public startTime = Date.now();
 	public collectors: Map<string, MessageCollector> = new Map();
 
