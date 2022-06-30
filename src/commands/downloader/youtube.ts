@@ -11,12 +11,13 @@ export const YouTubeDownloader: CommandFunc = async (ctx: Context) => {
 	const u = (await redis.get('yt-session-' + ctx.authorNumber)) || 0;
 	if (u && parseInt(u) >= 3) {
 		await ctx.reply(
-			'You already have 3 session to use this command! Try again later!',
+			'You have reached the limit of 3 downloads per user.' +
+				' Please try again later.',
 		);
 		return;
 	}
 	if (!ctx.args.length) {
-		await ctx.reply('Please provide url/query!');
+		await ctx.reply('You need to specify a link or a search query!');
 		return;
 	}
 
@@ -33,12 +34,10 @@ export const YouTubeDownloader: CommandFunc = async (ctx: Context) => {
 	if (ytdl.validateURL(key)) {
 		const infoYtdl = await ytdl.getBasicInfo(key);
 		if (infoYtdl.videoDetails.isLiveContent) {
-			await ctx.reply("This video is live stream, i can't download it!");
+			await ctx.reply('This is a live stream!');
 			return;
 		} else if (parseInt(infoYtdl.videoDetails.lengthSeconds) >= 20 * 60) {
-			await ctx.reply(
-				"The video duration is too long, i can't download it!",
-			);
+			await ctx.reply('This video is too long!');
 			return;
 		}
 		info.name = infoYtdl.videoDetails.title;
@@ -77,7 +76,7 @@ export const YouTubeDownloader: CommandFunc = async (ctx: Context) => {
 		await contextSelect?.delete();
 		const num = collector.contexts[0].text;
 		if (isNaN(num as unknown as number)) {
-			await ctx.reply('Invalid option!');
+			await ctx.reply('Please reply with number!');
 			return;
 		} else {
 			if (!searchResults.at(parseInt(num) - 1)) {
@@ -93,18 +92,16 @@ export const YouTubeDownloader: CommandFunc = async (ctx: Context) => {
 			':',
 		) as string[];
 		if (searchResults[parseInt(num)].isLive) {
-			await ctx.reply("This video is live stream, i can't download!");
+			await ctx.reply("This video is live stream, i can't download it!");
 			return;
 		} else if (durs.length > 2) {
 			await ctx.reply(
-				'This video duration is too long, oh god *' +
-					durs[0] +
-					' hours* :<',
+				"The video duration is too long, i can't download it!",
 			);
 			return;
 		} else if (durs.length == 2 && parseInt(durs[parseInt(num) - 1]) > 20) {
 			await ctx.reply(
-				"This video duration is too long, i can't download it!",
+				"The video duration is too long, i can't download it!",
 			);
 			return;
 		}
@@ -138,7 +135,7 @@ export const YouTubeDownloader: CommandFunc = async (ctx: Context) => {
 	stream.on('data', (ch) => {
 		if (new Blob([buffs]).size >= 215000000) {
 			stream.destroy();
-			ctx.reply('Downloaded has been stopped due storage limit!');
+			ctx.reply('Download limit reached!');
 		} else {
 			buffs = Buffer.concat([buffs, Buffer.from(ch)]);
 		}
@@ -152,14 +149,14 @@ export const YouTubeDownloader: CommandFunc = async (ctx: Context) => {
 			'yt-session-' + ctx.authorNumber,
 			countSession > 0 ? countSession - 1 : 0,
 		);
-		await ctx.reply('Download completed, sending...');
+		await ctx.reply('Sending...');
 		if (!mediaFlag || mediaFlag === 'mp3' || mediaFlag === 'audio') {
 			await ctx.replyWithAudio(buffs);
 		} else if (
 			(mediaFlag && mediaFlag === 'mp4') ||
 			mediaFlag === 'video'
 		) {
-			await ctx.replyWithVideo(buffs, `Downloaded *${info.name}*`);
+			await ctx.replyWithVideo(buffs, `Downloaded ${info.name} 🎉`);
 		}
 	});
 
@@ -170,6 +167,8 @@ export const YouTubeDownloader: CommandFunc = async (ctx: Context) => {
 					ctx.currentJid() +
 					'stopped because getting kicked from the group!',
 			);
+
+			return;
 		}
 	});
 };
