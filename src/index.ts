@@ -60,6 +60,9 @@ async function initSock(): Promise<void> {
 		// start the module
 		client.modules.loads();
 		client.modules.loadEvents();
+
+		client.logger.info('Loaded', client.modules.listens.length, 'modules');
+		client.logger.info('Loaded', client.modules.listens.length, 'events');
 	} catch (err) {
 		if (err instanceof Error) {
 			console.error(err.message);
