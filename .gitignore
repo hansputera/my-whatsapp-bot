@@ -1,7 +1,6 @@
 node_modules
 dist
 .env
-src/config.ts
 .yarn/cache
 .yarn/*.gz
 keys/private.*
