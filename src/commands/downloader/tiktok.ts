@@ -41,7 +41,7 @@ const sendTikTokFunc = async (ctx: Context, data: TikTokResponse) => {
 	const response = await Util.fetch(data.video?.urls[0] as string, {
 		followRedirect: true,
 	});
-	const text = `*${data.video?.title ?? 'No title.'}*`;
+	const text = data.caption ?? '';
 
 	await ctx.replyWithVideo(response.rawBody, text);
 };
@@ -49,7 +49,7 @@ const sendTikTokFunc = async (ctx: Context, data: TikTokResponse) => {
 const tiktokDownloaderCommand: CommandFunc = async (ctx: Context) => {
 	const url = ctx.args.shift();
 	if (!url) {
-		await ctx.reply("TikTok Video URL doesn't valid!");
+		await ctx.reply('You need to specify a link!');
 		return;
 	} else {
 		const videoDataCache = await redis.get(url as string);
@@ -71,8 +71,8 @@ const tiktokDownloaderCommand: CommandFunc = async (ctx: Context) => {
 				const json = JSON.parse(response.body);
 				if (json.error) {
 					await ctx.reply(
-						'Can you try again please? ' +
-							'Maybe the url is not valid or another issue',
+						'Looks like the link is invalid or' +
+							' the video is private.',
 					);
 					return;
 				} else {
@@ -83,11 +83,11 @@ const tiktokDownloaderCommand: CommandFunc = async (ctx: Context) => {
 			} catch (e) {
 				if (/expected/gi.test((e as any).response.body)) {
 					await ctx.reply(
-						"Maybe your url isn't valid, try again please!",
+						'Can you please try again with a valid link?',
 					);
 					return;
 				}
-				await ctx.reply('Sorry, something was wrong. Try again!');
+				await ctx.reply('Something went wrong!');
 			}
 		}
 	}
