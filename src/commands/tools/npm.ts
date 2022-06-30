@@ -13,14 +13,20 @@ const npmCommand: CommandFunc = async (ctx: Context) => {
 			return;
 		}
 		const response = await got.get(
-			'https://registry.npmjs.com/' + encodeURIComponent(query),
+			'https://registry.npmjs.org/' + encodeURIComponent(query),
 		);
 
 		const json = JSON.parse(response.body);
 
 		// npm package infos
-		const dependencies = json['dependencies']
-			? Object.keys(json['dependencies'])
+		const dependencies = json['versions'][json['dist-tags']['latest']][
+			'dependencies'
+		]
+			? Object.keys(
+					json['versions'][json['dist-tags']['latest']][
+						'dependencies'
+					],
+			  )
 			: [];
 
 		const maintainers = json['maintainers'].map(
