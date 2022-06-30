@@ -1,7 +1,7 @@
 import { CommandFunc } from '../../types';
 import { Context } from '../../extends/context';
 import { Util } from '../../objects';
-import { cpus, arch } from 'os';
+import { cpus, arch, uptime } from 'os';
 
 const statsCommand: CommandFunc = async (ctx: Context) => {
 	const startedBot = new Date(ctx.client.startTime).toLocaleDateString('id', {
@@ -14,7 +14,11 @@ const statsCommand: CommandFunc = async (ctx: Context) => {
 	});
 	await ctx.reply(
 		`+ Bot Statistics\n- Bot started at: ${startedBot}\n- Bot active: Active for ${Util.parseDuration(
-			(Date.now() - ctx.client.startTime) / 1000,
+			Date.now() - ctx.client.startTime,
+			{
+				colonNotation: false,
+				compact: false,
+			},
 		)}\n\n+ System statistics\n- Memory Usage: ${(
 			process.memoryUsage().heapUsed /
 			1024 /
@@ -24,9 +28,10 @@ const statsCommand: CommandFunc = async (ctx: Context) => {
 			1024 /
 			1024
 		).toFixed(2)} MiB` +
-			`\n- Uptime: ${Util.parseDuration(
-				process.uptime(),
-			)}\n- CPU: ${arch()} ${cpus()[0].model} ${cpus().length} core(s)`,
+			`\n- Uptime: ${Util.parseDuration(uptime() * 1000, {
+				compact: false,
+				colonNotation: false,
+			})}\n- CPU: ${arch()} ${cpus()[0].model} ${cpus().length} core(s)`,
 	);
 };
 
