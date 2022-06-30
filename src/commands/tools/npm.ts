@@ -9,7 +9,7 @@ const npmCommand: CommandFunc = async (ctx: Context) => {
 	try {
 		const query = ctx.args[0];
 		if (!query) {
-			await ctx.reply('Please provide a query, (eg. *npm lodash*)');
+			await ctx.reply('Please specify a package name!');
 			return;
 		}
 		const response = await got.get(
