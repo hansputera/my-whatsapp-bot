@@ -36,7 +36,9 @@ const HelpCommand: CommandFunc = async (ctx: Context) => {
 				)
 				.map((c) => c.name);
 			if (probabilityCmds.length) {
-				await ctx.reply('Did you mean? ' + probabilityCmds.join(', '));
+				await ctx.reply(
+					'Did you mean ' + probabilityCmds.join(' or ') + '?',
+				);
 			} else {
 				await ctx.reply(
 					"I couldn't find a command what " +
