@@ -8,7 +8,7 @@ const brainlyCommand: CommandFunc = async (ctx: Context) => {
 	try {
 		const question = ctx.args.join(' ');
 		if (!question.length) {
-			await ctx.reply('Please provide a question');
+			await ctx.reply('Please specify a question!');
 			return;
 		}
 
@@ -56,7 +56,7 @@ const brainlyCommand: CommandFunc = async (ctx: Context) => {
 			JSON.stringify(qs),
 		);
 		if (!qs.length) {
-			await ctx.reply("I couldn't find the answer(s)");
+			await ctx.reply('No result found');
 			return;
 		}
 
@@ -73,7 +73,7 @@ const brainlyCommand: CommandFunc = async (ctx: Context) => {
 							1 +
 							'. ' +
 							(q.question.content.trim().length > 100
-								? q.question.content.trim().substr(0, 101) +
+								? q.question.content.trim().substring(0, 101) +
 								  '...'
 								: q.question.content.trim()),
 					)
@@ -98,19 +98,19 @@ const brainlyCommand: CommandFunc = async (ctx: Context) => {
 		await LCtx?.delete();
 
 		if (!collector.contexts.length) {
-			await ctx.reply('Time is up, try again!');
+			await ctx.reply('No answer selected');
 			return;
 		}
 
 		const index = parseInt(collector.contexts[0].text);
 		if (index === -1) {
-			await ctx.reply('invalid number, try again pls');
+			await ctx.reply('Invalid answer');
 			return;
 		}
 		const qSelected = qs.at(index - 1);
 
 		if (!qSelected) {
-			await ctx.reply('invalid number, try again pls');
+			await ctx.reply('Invalid answer');
 			return;
 		}
 
@@ -138,11 +138,7 @@ const brainlyCommand: CommandFunc = async (ctx: Context) => {
 			} else await qMsg?.reply(t);
 		});
 	} catch (e) {
-		await ctx.reply(
-			'Something was wrong, try again p' +
-				'ls.\nError: ' +
-				(e as Error).message,
-		);
+		await ctx.reply('Error: ' + (e as Error).message);
 	}
 };
 
