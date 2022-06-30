@@ -28,7 +28,8 @@ Hello there, welcome to my personal whatsapp bot project. I use the [Baileys Mul
 -   Clone this repository.
 -   Install dependencies using `yarn` or `npm` (`yarn/npm install`)
 -   Change `.env.schema` to `.env`, and fill `REDIS` with your redis server url.
--   Finally, run `npm run build` or `yarn build` and `node ./dist`
+-   Generate your credentials using `node scripts/genKey.mjs`
+-   Finally, run `npm run build` or `yarn build` and `node ./dist/index.js`
 
 ## Authentication
 
