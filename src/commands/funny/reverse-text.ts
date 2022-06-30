@@ -5,7 +5,7 @@ import { Util } from '../../objects';
 const reverseTextCommand: CommandFunc = async (ctx: Context) => {
 	const text = ctx.args.join(' ');
 	if (!text.length) {
-		await ctx.reply('Please provide a text to reverse!');
+		await ctx.reply('You need to send a text!');
 		return;
 	}
 

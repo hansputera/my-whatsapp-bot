@@ -5,7 +5,7 @@ import { Util } from '../../objects';
 const mockTextCommand: CommandFunc = async (ctx: Context) => {
 	const text = ctx.args.join(' ');
 	if (!text) {
-		await ctx.reply('You should provide a text!');
+		await ctx.reply('You need to send a text!');
 		return;
 	}
 
