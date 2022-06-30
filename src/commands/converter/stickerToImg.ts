@@ -29,7 +29,9 @@ const stickerToImg: CommandFunc = async (ctx: Context) => {
 				const stickerBuffer = await sticker.retrieveFile();
 
 				await ctx.reply('Converting ...');
-				const sharped = sharp(stickerBuffer);
+				const sharped = sharp(stickerBuffer, {
+					animated: sticker.animated,
+				});
 
 				if (isGIF) {
 					await ctx.replyWithVideo(await sharped.gif().toBuffer());
